@@ -73,8 +73,11 @@ export class App implements OnDestroy {
     this.analysis.set(undefined);
 
     try {
-      const result = await this.firebaseAiService.generateTexts(file);
-      this.analysis.set(result);
+      const [alternativeText, tags] = await Promise.all([
+        this.firebaseAiService.generateAltText(file), 
+        this.firebaseAiService.generateTags(file)]
+      );
+      this.analysis.set({ alternativeText, tags});
     } catch (e: unknown) {
       if (e instanceof Error) {
         this.error.set(e.message);

@@ -1,4 +1,3 @@
-import { ImageAnalysis } from './../types/image-analysis.type';
 import { inject, Injectable } from '@angular/core';
 import { GEMINI_MODEL } from '../../core/constants/firebase.constant';
 import { fileToGenerativePart } from '../fileToPart.util';
@@ -9,7 +8,7 @@ import { fileToGenerativePart } from '../fileToPart.util';
 export class FirebaseService  {
     private geminiModel = inject(GEMINI_MODEL);
     
-    async generateTexts(image: File): Promise<ImageAnalysis> {
+    async generateAltText(image: File): Promise<string> {
         if (!image) {
             throw Error('image is required to generate texts.');
         }
@@ -18,16 +17,36 @@ export class FirebaseService  {
         const imagePart = await fileToGenerativePart(image);
         console.log(imagePart);
         
-        const imagePrompt = `Generate a least three tags and the alternative text for the image provided.`;
-        const result = await this.geminiModel.generateContent([imagePrompt, imagePart]);
+        const altTextPrompt = `Generate an alternative text for the image provided, max 200 characters.`;
+        const result = await this.geminiModel.generateContent([altTextPrompt, imagePart]);
 
         if (result?.response) {
           const response = result.response;
-          const reult = response.text();
-          const parsed: ImageAnalysis = JSON.parse(reult); // Validate JSON structure
-          console.log(parsed);
-          return parsed;
+          const text = response.text();
+          console.log('reult', text);
+          return text;
         }
         throw Error('No text generated.');
-    }    
+    }
+
+    async generateTags(image: File): Promise<string[]> {
+      if (!image) {
+          throw Error('image is required to generate texts.');
+      }
+
+      console.log(image);
+      const imagePart = await fileToGenerativePart(image);
+      console.log(imagePart);
+      
+      const imagePrompt = `Generate a least five tags, separated by the delimiter, |.`;
+      const result = await this.geminiModel.generateContent([imagePrompt, imagePart]);
+
+      if (result?.response) {
+        const response = result.response;
+        const strTags = response.text();
+        console.log('strTags', strTags);
+        return (strTags || '').split('|');
+      }
+      throw Error('No text generated.');
+  }  
 }

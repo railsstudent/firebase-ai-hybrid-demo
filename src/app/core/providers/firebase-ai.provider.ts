@@ -18,9 +18,13 @@ export function provideFirebaseAiLogic() {
 
                 return getGenerativeModel(ai, { 
                     model,
+                    mode: 'prefer_on_device',
                     generationConfig: {
                         responseMimeType: 'application/json',
                         responseSchema: ImageAnalysisSchema
+                    },
+                    inCloudParams: {
+                        model: 'gemini-2.5-flash',
                     }                
                 });
             }
