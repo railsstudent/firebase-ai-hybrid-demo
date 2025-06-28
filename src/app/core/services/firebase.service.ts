@@ -1,3 +1,4 @@
+import { ImageAnalysis } from './../types/image-analysis.type';
 import { inject, Injectable } from '@angular/core';
 import { GEMINI_MODEL } from '../../core/constants/firebase.constant';
 import { blobToGenerativePart } from '../blobToPart.util';
@@ -6,9 +7,9 @@ import { blobToGenerativePart } from '../blobToPart.util';
   providedIn: 'root'
 })
 export class FirebaseService  {
-    geminiModel = inject(GEMINI_MODEL);
+    private geminiModel = inject(GEMINI_MODEL);
     
-    async generateTexts(image: Blob) {
+    async generateTexts(image: Blob): Promise<ImageAnalysis> {
         if (!image) {
             throw Error('image is required to generate texts.');
         }
@@ -20,8 +21,9 @@ export class FirebaseService  {
         if (result?.response) {
           const response = result.response;
           const reult = response.text();
-          console.log(reult);
-          return reult;
+          const parsed: ImageAnalysis = JSON.parse(reult); // Validate JSON structure
+          console.log(parsed);
+          return parsed;
         }
         throw Error('No text generated.');
     }    
