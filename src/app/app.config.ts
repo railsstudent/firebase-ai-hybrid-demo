@@ -1,11 +1,11 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 
-import { provideFirebase } from './core/providers/firebase.provider';
+import { provideFirebaseAiLogic } from './core/providers/firebase-ai.provider';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideFirebase(),
+    provideFirebaseAiLogic(),
   ]
 };

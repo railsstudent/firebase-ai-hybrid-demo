@@ -3,9 +3,9 @@ import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 import { initializeApp } from "firebase/app";
 import firebaseConfig from '../../firebase-ai.json';
 import { GEMINI_MODEL } from '../constants/firebase.constant';
-import { ImageTextsSchema } from '../schemas/image-texts.schema';
+import { ImageAnalysisSchema } from '../schemas/image-analysis.schema';
 
-export function provideFirebase() {
+export function provideFirebaseAiLogic() {
     return makeEnvironmentProviders([
         {
             provide: GEMINI_MODEL,
@@ -20,7 +20,7 @@ export function provideFirebase() {
                     model,
                     generationConfig: {
                         responseMimeType: 'application/json',
-                        responseSchema: ImageTextsSchema
+                        responseSchema: ImageAnalysisSchema
                     }                
                 });
             }

@@ -1,7 +1,7 @@
 import { ImageAnalysis } from './../types/image-analysis.type';
 import { inject, Injectable } from '@angular/core';
 import { GEMINI_MODEL } from '../../core/constants/firebase.constant';
-import { blobToGenerativePart } from '../blobToPart.util';
+import { fileToGenerativePart } from '../fileToPart.util';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +9,15 @@ import { blobToGenerativePart } from '../blobToPart.util';
 export class FirebaseService  {
     private geminiModel = inject(GEMINI_MODEL);
     
-    async generateTexts(image: Blob): Promise<ImageAnalysis> {
+    async generateTexts(image: File): Promise<ImageAnalysis> {
         if (!image) {
             throw Error('image is required to generate texts.');
         }
 
-        const imagePart = await blobToGenerativePart(image);        
+        console.log(image);
+        const imagePart = await fileToGenerativePart(image);
+        console.log(imagePart);
+        
         const imagePrompt = `Generate a least three tags and the alternative text for the image provided.`;
         const result = await this.geminiModel.generateContent([imagePrompt, imagePart]);
 

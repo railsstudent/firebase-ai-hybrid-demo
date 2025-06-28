@@ -1,10 +1,12 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { FirebaseService } from './core/services/firebase.service';
 import { ImageAnalysis } from './core/types/image-analysis.type';
 import { SpinnerIconComponent } from './icons/spinner-icon.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';
+
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
 
 @Component({
   selector: 'app-root',
@@ -15,14 +17,14 @@ import { TagsDisplayComponent } from './tags-display/tags-display.component';
     SpinnerIconComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
+export class App implements OnDestroy {
   selectedFile = signal<File | undefined>(undefined);
   analysis = signal<ImageAnalysis | undefined>(undefined);
   isLoading = signal(false);
   error = signal<string | undefined>(undefined);
-  acceptedTypes = signal(['image/jpeg', 'image/png', 'image/jpg']);
+  readonly acceptedTypes = ACCEPTED_IMAGE_TYPES;
 
   previewUrl = computed(() => { 
     const file = this.selectedFile();
@@ -46,8 +48,7 @@ export class App {
   }
 
   handleFileChange(file: File) {
-    const validTypes = this.acceptedTypes();
-    if (!validTypes.includes(file.type)) {
+    if (!this.acceptedTypes.includes(file.type)) {
       this.error.set('Invalid file type. Please select a JPG, JPEG, or PNG image.');
       return;
     }
