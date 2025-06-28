@@ -23,7 +23,7 @@ export class FirebaseService  {
         if (result?.response) {
           const response = result.response;
           const text = response.text();
-          console.log('reult', text);
+          console.log('text', text);
           return text;
         }
         throw Error('No text generated.');
