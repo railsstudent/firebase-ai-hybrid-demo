@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
-import { FirebaseService } from './core/services/firebase.service';
-import { ImageAnalysis } from './core/types/image-analysis.type';
+import { FirebaseService } from './ai/services/firebase.service';
+import { ImageAnalysis } from './ai/types/image-analysis.type';
 import { SpinnerIconComponent } from './icons/spinner-icon.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';

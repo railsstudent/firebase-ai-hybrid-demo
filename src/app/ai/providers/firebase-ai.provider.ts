@@ -2,13 +2,13 @@ import { makeEnvironmentProviders } from '@angular/core';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 import { initializeApp } from "firebase/app";
 import firebaseConfig from '../../firebase-ai.json';
-import { GEMINI_MODEL } from '../constants/firebase.constant';
+import { AI_MODEL } from '../constants/firebase.constant';
 import { ImageAnalysisSchema } from '../schemas/image-analysis.schema';
 
 export function provideFirebaseAiLogic() {
     return makeEnvironmentProviders([
         {
-            provide: GEMINI_MODEL,
+            provide: AI_MODEL,
             useFactory: () => {
                 const { model, app } = firebaseConfig
                 const firebaseApp = initializeApp(app);
@@ -20,7 +20,7 @@ export function provideFirebaseAiLogic() {
                     model,
                     mode: 'prefer_on_device',
                     inCloudParams: {
-                        model: 'gemini-2.5-flash',
+                        model,
                         generationConfig: {
                             responseMimeType: 'application/json',
                             responseSchema: ImageAnalysisSchema
@@ -29,19 +29,6 @@ export function provideFirebaseAiLogic() {
                     onDeviceParams: {
                         promptOptions: {
                           responseConstraint: ImageAnalysisSchema,
-                        },
-                        createOptions: {
-                            initialPrompts: [
-                                {
-                                    role: 'system',
-                                    content: [
-                                        {
-                                            type: 'text',
-                                            value: 'You are a helpful assistant that can generate alternative text and tags for an image.'
-                                        }
-                                    ]
-                                },
-                            ],
                         }
                     }             
                 });

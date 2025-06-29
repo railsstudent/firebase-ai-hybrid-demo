@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { GEMINI_MODEL } from '../../core/constants/firebase.constant';
+import { AI_MODEL } from '../constants/firebase.constant';
 import { fileToGenerativePart } from '../fileToPart.util';
 import { ImageAnalysis } from '../types/image-analysis.type';
 
@@ -7,7 +7,7 @@ import { ImageAnalysis } from '../types/image-analysis.type';
   providedIn: 'root'
 })
 export class FirebaseService  {
-    private geminiModel = inject(GEMINI_MODEL);
+    private aiModel = inject(AI_MODEL);
     
     async generateAltText(image: File): Promise<ImageAnalysis> {
         if (!image) {
@@ -19,7 +19,7 @@ export class FirebaseService  {
         console.log(imagePart);
         
         const altTextPrompt = `Generate an alternative text for the image provided, max 200 characters, and at least 3 tags.`;
-        const result = await this.geminiModel.generateContent([altTextPrompt, imagePart]);
+        const result = await this.aiModel.generateContent([altTextPrompt, imagePart]);
 
         if (result?.response) {
           const response = result.response;
