@@ -17,7 +17,6 @@ export function provideFirebaseAiLogic() {
                 const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
 
                 return getGenerativeModel(ai, { 
-                    model,
                     mode: 'prefer_on_device',
                     inCloudParams: {
                         model,
