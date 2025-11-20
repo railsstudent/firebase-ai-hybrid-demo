@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
-import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { FirebaseService } from './ai/services/firebase.service';
 import { ImageAnalysis } from './ai/types/image-analysis.type';
+import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { SpinnerIconComponent } from './icons/spinner-icon.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';
 
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 
 @Component({
   selector: 'app-root',
@@ -26,7 +26,7 @@ export class App implements OnDestroy {
   error = signal<string | undefined>(undefined);
   readonly acceptedTypes = ACCEPTED_IMAGE_TYPES;
 
-  previewUrl = computed(() => { 
+  previewUrl = computed(() => {
     const file = this.selectedFile();
     if (file) {
       return URL.createObjectURL(file);
