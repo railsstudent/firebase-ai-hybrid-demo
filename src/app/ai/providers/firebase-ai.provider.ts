@@ -1,7 +1,7 @@
 import { makeEnvironmentProviders } from '@angular/core';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 import { initializeApp } from "firebase/app";
-import firebaseConfig from '../../firebase-ai.json';
+import firebaseConfig from '../../firebase.json';
 import { AI_MODEL } from '../constants/firebase.constant';
 import { ImageAnalysisSchema } from '../schemas/image-analysis.schema';
 
@@ -16,7 +16,7 @@ export function provideFirebaseAiLogic() {
                 // Initialize the Gemini Developer API backend service
                 const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
 
-                return getGenerativeModel(ai, { 
+                return getGenerativeModel(ai, {
                     mode: 'prefer_on_device',
                     inCloudParams: {
                         model,
@@ -29,7 +29,7 @@ export function provideFirebaseAiLogic() {
                         promptOptions: {
                           responseConstraint: ImageAnalysisSchema,
                         }
-                    }             
+                    }
                 });
             }
         }
