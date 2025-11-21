@@ -4,6 +4,7 @@ import { ImageAnalysis } from './ai/types/image-analysis.type';
 import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { SpinnerIconComponent } from './icons/spinner-icon.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
+import { RecommendationsDisplay } from './recommendations-display/recommendations.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
@@ -14,7 +15,8 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
     AltTextDisplayComponent,
     TagsDisplayComponent,
     PhotoUploadComponent,
-    SpinnerIconComponent
+    SpinnerIconComponent,
+    RecommendationsDisplay
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +39,7 @@ export class App implements OnDestroy {
 
   alternativeText = computed(() => this.analysis()?.alternativeText || 'Default alternative text');
   tags = computed(() => this.analysis()?.tags || []);
+  recommendations = computed(() => this.analysis()?.recommendations || []);
 
   firebaseAiService = inject(FirebaseService);
 

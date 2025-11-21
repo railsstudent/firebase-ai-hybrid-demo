@@ -43,6 +43,7 @@
              @if (!isLoading() && analysis()) {
                 <div class="animate-fade-in">
                   <app-alt-text-display [altText]="alternativeText()" />
+                  <app-recommendations-display [recommendations]="recommendations()" />
                   <app-tags-display [tags]="tags()" />
                 </div>
              }

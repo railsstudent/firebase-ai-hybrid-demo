@@ -6,9 +6,10 @@ export const ImageAnalysisSchema = Schema.object({
             items: Schema.string(),
         }),
         alternativeText: Schema.string(),
-        recommendation: Schema.array({
+        recommendations: Schema.array({
           items: Schema.object({
             properties: {
+              id: Schema.integer(),
               text: Schema.string(),
               reason: Schema.string()
             }
