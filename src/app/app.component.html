@@ -49,6 +49,9 @@
              }
         </div>
       </div>
+      <div>
+        <app-thought-summary [thought]="analysis()?.thought || ''" [tokenUsage]="analysis()?.tokenUsage" />
+      </div>
     </main>
   </div>
 </div>

@@ -9,3 +9,16 @@ export type ImageAnalysis = {
     tags: string[];
     recommendations: Recommendation[]
 }
+
+export type TokenUsage = {
+  input: number;
+  output: number;
+  thought: number;
+  total: number;
+}
+
+export type ImageAnalysisResponse = {
+  parsed: ImageAnalysis;
+  thought: string,
+  tokenUsage: TokenUsage
+}

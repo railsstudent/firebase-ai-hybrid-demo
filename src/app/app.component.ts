@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { FirebaseService } from './ai/services/firebase.service';
-import { ImageAnalysis } from './ai/types/image-analysis.type';
+import { ImageAnalysisResponse } from './ai/types/image-analysis.type';
 import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { SpinnerIconComponent } from './icons/spinner-icon.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
 import { RecommendationsDisplay } from './recommendations-display/recommendations.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';
+import { ThoughtSummaryComponent } from './thought-summary/thought-summary.component';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 
@@ -16,14 +17,15 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
     TagsDisplayComponent,
     PhotoUploadComponent,
     SpinnerIconComponent,
-    RecommendationsDisplay
+    RecommendationsDisplay,
+    ThoughtSummaryComponent,
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App implements OnDestroy {
   selectedFile = signal<File | undefined>(undefined);
-  analysis = signal<ImageAnalysis | undefined>(undefined);
+  analysis = signal<ImageAnalysisResponse | undefined>(undefined);
   isLoading = signal(false);
   error = signal<string | undefined>(undefined);
   readonly acceptedTypes = ACCEPTED_IMAGE_TYPES;
@@ -37,10 +39,10 @@ export class App implements OnDestroy {
     return undefined;
   })
 
-  alternativeText = computed(() => this.analysis()?.alternativeText || 'Default alternative text');
-  tags = computed(() => this.analysis()?.tags || []);
-  recommendations = computed(() => this.analysis()?.recommendations || []);
-  thought = signal('');
+  parsed = computed(() => this.analysis()?.parsed);
+  alternativeText = computed(() => this.parsed()?.alternativeText || 'Default alternative text');
+  tags = computed(() => this.parsed()?.tags || []);
+  recommendations = computed(() => this.parsed()?.recommendations || []);
 
   firebaseAiService = inject(FirebaseService);
 
@@ -78,9 +80,7 @@ export class App implements OnDestroy {
 
     try {
       const results = await this.firebaseAiService.generateAltText(file);
-      const { parsed, thought } = results;
-      this.analysis.set(parsed);
-      this.thought.set(thought);
+      this.analysis.set(results);
     } catch (e: unknown) {
       if (e instanceof Error) {
         this.error.set(e.message);
