@@ -1,15 +1,9 @@
 @if (htmlThought()) {
-    <div class="w-full mt-6 flex">
-      <div class="grow shrink basis-75 mr-4">
-        <h3 class="text-lg font-semibold text-slate-300 mb-2">Thought Summary</h3>
-        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
-          <p class="text-slate-200 italic" [innerHTML]="htmlThought()"></p>
-        </div>
-      </div>
-      <div class="grow shrink basis-25">
+    <div class="w-full mt-6 flex flex-col">
+      <div class="mb-4">
         <h3 class="text-lg font-semibold text-slate-300 mb-2">Token Usage</h3>
         @let usage = tokenUsage();
-        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600 flex flex-wrap justify-around">
           <p class="text-slate-200 italic">
             <span>Input: </span><span>{{ usage?.input || 0 }}</span>
           </p>
@@ -22,6 +16,12 @@
           <p class="text-slate-200 italic">
             <span>Token: </span><span>{{ usage?.total }}</span>
           </p>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold text-slate-300 mb-2">Thought Summary</h3>
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+          <p class="text-slate-200 italic" [innerHTML]="htmlThought()"></p>
         </div>
       </div>
     </div>
