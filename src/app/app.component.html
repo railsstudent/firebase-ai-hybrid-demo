@@ -15,10 +15,10 @@
         <app-photo-upload
           [previewUrl]="previewUrl()"
           [isLoading]="isLoading()"
-          [selectedFile]="selectedFile()"
           [acceptedFileTypes]="acceptedTypes"
           (fileChange)="handleFileChange($event)"
           (generate)="handleGenerateClick()"
+          (removeFile)="selectedFile.set(undefined)"
         />
 
         <!-- Right Side: Results -->
