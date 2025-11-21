@@ -9,7 +9,7 @@ import { ImageAnalysis } from '../types/image-analysis.type';
 export class FirebaseService  {
     private aiModel = inject(AI_MODEL);
 
-    async generateAltText(image: File): Promise<ImageAnalysis> {
+    async generateAltText(image: File): Promise<{ parsed: ImageAnalysis; thought: string }> {
         if (!image) {
             throw Error('image is required to generate texts.');
         }
@@ -29,12 +29,15 @@ Task 3: Based on the alternative text and tags, provide some suggestions to make
 
         if (result?.response) {
           const response = result.response;
-          const thought = response.thoughtSummary()
+          const thought = response.thoughtSummary() || '';
           const text = response.text();
           console.log('text', text);
           console.log('thought', thought);
           const parsed: ImageAnalysis = JSON.parse(text);
-          return parsed;
+          return {
+            parsed,
+            thought,
+          };
         }
         throw Error('No text generated.');
     }

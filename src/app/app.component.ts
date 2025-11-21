@@ -40,6 +40,7 @@ export class App implements OnDestroy {
   alternativeText = computed(() => this.analysis()?.alternativeText || 'Default alternative text');
   tags = computed(() => this.analysis()?.tags || []);
   recommendations = computed(() => this.analysis()?.recommendations || []);
+  thought = signal('');
 
   firebaseAiService = inject(FirebaseService);
 
@@ -77,7 +78,9 @@ export class App implements OnDestroy {
 
     try {
       const results = await this.firebaseAiService.generateAltText(file);
-      this.analysis.set(results);
+      const { parsed, thought } = results;
+      this.analysis.set(parsed);
+      this.thought.set(thought);
     } catch (e: unknown) {
       if (e instanceof Error) {
         this.error.set(e.message);
