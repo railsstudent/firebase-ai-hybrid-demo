@@ -16,10 +16,11 @@ export class FirebaseService  {
 
         const imagePart = await fileToGenerativePart(image);
         const altTextPrompt = `
-You are asked to perform three tasks:
+You are asked to perform four tasks:
 Task 1: Generate an alternative text for the image provided, max 125 characters.
 Task 2: Generate at least 3 tags to describe the image.
 Task 3: Based on the alternative text and tags, provide some suggestions to make the image more interestin and the reason to support them.
+Task 4: Search for a surprising or obscure fact that interconnects the following tags. If a direct link doesn't exist, find a conceptual link between them.
 `;
         const result = await this.aiModel.generateContent([altTextPrompt, imagePart]);
 
@@ -27,8 +28,6 @@ Task 3: Based on the alternative text and tags, provide some suggestions to make
           const response = result.response;
           const thought = response.thoughtSummary() || '';
           const text = response.text();
-          console.log('text', text);
-          console.log('thought', thought);
           const parsed: ImageAnalysis = JSON.parse(text);
           const usageMetadata = response.usageMetadata;
           const tokenUsage = {
@@ -38,10 +37,14 @@ Task 3: Based on the alternative text and tags, provide some suggestions to make
             total: usageMetadata?.totalTokenCount || 0,
           };
 
+          const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
+          const googleSearchSuggestions = groundingMetadata?.searchEntryPoint?.renderedContent;
+
           return {
             parsed,
             thought,
             tokenUsage,
+            googleSearchSuggestions,
           };
         }
         throw Error('No text generated.');

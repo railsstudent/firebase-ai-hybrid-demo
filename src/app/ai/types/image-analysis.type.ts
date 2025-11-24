@@ -8,6 +8,7 @@ export type ImageAnalysis = {
     alternativeText: string;
     tags: string[];
     recommendations: Recommendation[]
+    fact: string;
 }
 
 export type TokenUsage = {
@@ -20,5 +21,6 @@ export type TokenUsage = {
 export type ImageAnalysisResponse = {
   parsed: ImageAnalysis;
   thought: string,
-  tokenUsage: TokenUsage
+  tokenUsage: TokenUsage;
+  googleSearchSuggestions?: string;
 }

@@ -14,6 +14,7 @@ export const ImageAnalysisSchema = Schema.object({
               reason: Schema.string()
             }
           })
-        })
+        }),
+        fact: Schema.string(),
      }
 });

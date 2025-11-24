@@ -16,15 +16,19 @@ function initAppCheckWithRecaptcha(firebaseApp: FirebaseApp) {
   });
 }
 
+const { model, app } = firebaseConfig
+const firebaseApp = initializeApp(app);
+
+// Initialize the Gemini Developer API backend service
+const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
+
+initAppCheckWithRecaptcha(firebaseApp);
+
 export function provideFirebaseAiLogic() {
     return makeEnvironmentProviders([
         {
             provide: AI_MODEL,
             useFactory: () => {
-                const { model, app } = firebaseConfig
-                const firebaseApp = initializeApp(app);
-                initAppCheckWithRecaptcha(firebaseApp)
-
                 const generationConfig: GenerationConfig = {
                     responseMimeType: 'application/json',
                     responseSchema: ImageAnalysisSchema,
@@ -33,9 +37,6 @@ export function provideFirebaseAiLogic() {
                       thinkingBudget: 512,
                     }
                 };
-
-                // Initialize the Gemini Developer API backend service
-                const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
 
                 return getGenerativeModel(ai, {
                     model,
