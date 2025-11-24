@@ -40,6 +40,7 @@ export function provideFirebaseAiLogic() {
                 return getGenerativeModel(ai, {
                     model,
                     generationConfig,
+                    tools: [{ googleSearch: {} }]
                 });
             }
         }
