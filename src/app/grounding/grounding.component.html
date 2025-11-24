@@ -1,0 +1,36 @@
+<div class="w-full mt-6">
+    <h3 class="text-lg font-semibold text-slate-300 mb-3">Interesting fact about the tags</h3>
+    @if (interestingFact()) {
+      <p class="text-indigo-400 italic mb-2">{{ interestingFact() }}.</p>
+    } @else {
+      <p class="text-slate-500 italic mb-2">The tag(s) does not have any interesting fact.</p>
+    }
+
+    @let citations = metadata()?.citations;
+    @let numCitations = citations?.length || 0;
+    @if (numCitations > 0) {
+      <h3 class="text-lg font-semibold text-slate-300 mb-3">Inline Citations</h3>
+      <ol class="list-decimal mb-3">
+      @for (citation of citations; track citation.title) {
+        <li class="ml-4 text-slate-200"><a [href]="citation.uri" target="blank">{{ citation.title }}</a></li>
+      }
+      </ol>
+    }
+
+    @if (metadata()?.searchQueries) {
+      <h3 class="text-lg font-semibold text-slate-300 mb-3">Search Queries</h3>
+      <ol class="list-decimal mb-2">
+      @for (query of metadata()?.searchQueries; track query) {
+        @if (query) {
+          <li class="ml-4 text-slate-200"><span class="italic">{{ query }}</span></li>
+        }
+      }
+      </ol>
+    }
+
+    @if (safeRenderedContent()) {
+      <h3 class="text-lg font-semibold text-slate-300 mb-3">Google Search Suggestions</h3>
+      <div [innerHTML]="safeRenderedContent()"></div>
+    }
+</div>
+

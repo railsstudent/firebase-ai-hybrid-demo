@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { GroundingMetadata, UsageMetadata, WebGroundingChunk } from 'firebase/ai';
 import { AI_MODEL } from '../constants/firebase.constant';
 import { fileToGenerativePart } from '../fileToPart.util';
 import { ImageAnalysis, ImageAnalysisResponse } from '../types/image-analysis.type';
@@ -29,24 +30,52 @@ Task 4: Search for a surprising or obscure fact that interconnects the following
           const thought = response.thoughtSummary() || '';
           const text = response.text();
           const parsed: ImageAnalysis = JSON.parse(text);
-          const usageMetadata = response.usageMetadata;
-          const tokenUsage = {
-            input: usageMetadata?.promptTokenCount || 0,
-            output: usageMetadata?.candidatesTokenCount || 0,
-            thought: usageMetadata?.thoughtsTokenCount || 0,
-            total: usageMetadata?.totalTokenCount || 0,
-          };
-
-          const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
-          const googleSearchSuggestions = groundingMetadata?.searchEntryPoint?.renderedContent;
+          const tokenUsage = this.getTokenUsage(response.usageMetadata);
+          const citations = this.constructCitations(response.candidates?.[0]?.groundingMetadata);
 
           return {
             parsed,
             thought,
             tokenUsage,
-            googleSearchSuggestions,
+            metadata: citations,
           };
         }
         throw Error('No text generated.');
     }
+
+  private constructCitations(groundingMetadata?: GroundingMetadata) {
+    const supports = groundingMetadata?.groundingSupports;
+    const citations: WebGroundingChunk[] = [];
+    if (supports) {
+      for (const support of supports) {
+        const indices = support.groundingChunkIndices || [];
+        for (const index of indices) {
+          const chunk = groundingMetadata?.groundingChunks?.[index];
+          if (chunk?.web) {
+            citations.push(chunk?.web);
+          }
+        }
+      }
+    }
+
+    const renderedContent = groundingMetadata?.searchEntryPoint?.renderedContent || '';
+    const searchQueries = (groundingMetadata?.webSearchQueries || [])
+      .filter((queries) => !!queries);
+
+    return {
+      citations,
+      renderedContent,
+      searchQueries
+    };
+  }
+
+  private getTokenUsage(usageMetadata?: UsageMetadata) {
+    const tokenUsage = {
+      input: usageMetadata?.promptTokenCount || 0,
+      output: usageMetadata?.candidatesTokenCount || 0,
+      thought: usageMetadata?.thoughtsTokenCount || 0,
+      total: usageMetadata?.totalTokenCount || 0,
+    };
+    return tokenUsage;
+  }
 }

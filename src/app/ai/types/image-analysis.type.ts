@@ -1,3 +1,5 @@
+import { WebGroundingChunk } from 'firebase/ai';
+
 export type Recommendation = {
   id: number;
   text: string;
@@ -18,9 +20,15 @@ export type TokenUsage = {
   total: number;
 }
 
+export type Metadata = {
+  citations: WebGroundingChunk[];
+  renderedContent: string;
+  searchQueries: string[];
+};
+
 export type ImageAnalysisResponse = {
   parsed: ImageAnalysis;
   thought: string,
   tokenUsage: TokenUsage;
-  googleSearchSuggestions?: string;
+  metadata: Metadata;
 }
