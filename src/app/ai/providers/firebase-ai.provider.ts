@@ -1,5 +1,5 @@
 import { makeEnvironmentProviders } from '@angular/core';
-import { GenerationConfig, getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
+import { GenerationConfig, getAI, getGenerativeModel, GoogleAIBackend, VertexAIBackend } from 'firebase/ai';
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import firebaseConfig from '../../firebase.json';
@@ -21,6 +21,7 @@ const firebaseApp = initializeApp(app);
 
 // Initialize the Gemini Developer API backend service
 const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
+// const ai = getAI(firebaseApp, { backend: new VertexAIBackend('global') });
 
 initAppCheckWithRecaptcha(firebaseApp);
 
