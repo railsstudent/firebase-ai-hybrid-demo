@@ -3,7 +3,7 @@
     @if (interestingFact()) {
       <p class="text-indigo-400 italic mb-2 text-lg">{{ interestingFact() }}.</p>
     } @else {
-      <p class="text-slate-500 italic mb-2">The tag(s) does not have any interesting fact.</p>
+      <p class="text-slate-500 italic mb-2">The tag(s) does not have any interesting or obscure fact.</p>
     }
 
     @let citations = metadata()?.citations;

@@ -11,5 +11,5 @@ export class ThoughtSummaryComponent {
   thought = input('');
   tokenUsage = input<TokenUsage | undefined>(undefined);
 
-  htmlThought = computed(() => marked(this.thought()));
+  htmlThought = computed(() => marked(this.thought().replace('\n\n', '<br />')));
 }
