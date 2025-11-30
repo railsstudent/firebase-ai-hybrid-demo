@@ -1,7 +1,7 @@
 <div class="w-full mt-6">
-    <h3 class="text-lg font-semibold text-slate-300 mb-3">Interesting fact about the tags</h3>
+    <h3 class="text-lg font-semibold text-slate-300 mb-3">A surprising or obscure fact about the tags</h3>
     @if (interestingFact()) {
-      <p class="text-indigo-400 italic mb-2">{{ interestingFact() }}.</p>
+      <p class="text-indigo-400 italic mb-2 text-lg">{{ interestingFact() }}.</p>
     } @else {
       <p class="text-slate-500 italic mb-2">The tag(s) does not have any interesting fact.</p>
     }

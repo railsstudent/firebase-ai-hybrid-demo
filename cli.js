@@ -26,9 +26,6 @@ const jsonString = JSON.stringify({
   app,
   model,
   recaptchaEnterpriseSiteKey: process.env.RECAPTCHA_ENTERPRISE_SITE_KEY || '',
-  isFirebaseAppCheckDebugMode: process.env.IS_FIREBASE_APPCHECK_DEBUG_MODE === 'true',
-  appCheckDebugToken: process.env.APPCHECK_DEBUG_TOKEN || '',
-
 }, null, 2);
 
 // Define output file path

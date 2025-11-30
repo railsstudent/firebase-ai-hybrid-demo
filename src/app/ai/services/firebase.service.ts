@@ -28,7 +28,7 @@ Task 4: Search for a surprising or obscure fact that interconnects the following
         if (result?.response) {
           const response = result.response;
           const thought = response.thoughtSummary() || '';
-          const text = response.text();
+          const text = response.text().replace(/```json\n?|```/g, '');
           const parsed: ImageAnalysis = JSON.parse(text);
           const tokenUsage = this.getTokenUsage(response.usageMetadata);
           const citations = this.constructCitations(response.candidates?.[0]?.groundingMetadata);

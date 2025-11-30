@@ -5,6 +5,11 @@ import { Metadata } from '../ai/types/image-analysis.type';
 @Component({
   selector: 'app-google-search-suggestions',
   templateUrl: './grounding.component.html',
+  styles: `
+    .carousel {
+      white-space: normal;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroundingComponent {
@@ -19,5 +24,5 @@ export class GroundingComponent {
       return this.sanitizer.bypassSecurityTrustHtml(unsafeContent);
     }
     return '';
-  })
+  });
 }
