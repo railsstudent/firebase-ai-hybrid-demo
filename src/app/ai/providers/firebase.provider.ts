@@ -12,9 +12,9 @@ export function provideFirebaseAiLogic() {
             provide: AI_MODEL,
             useFactory: () => {
               const { model, app } = firebaseConfig
-              const firebaseApp = initializeApp(app);
 
-              console.log('firebaseConfig.recaptchaEnterpriseSiteKey', firebaseConfig.recaptchaEnterpriseSiteKey);
+              console.log('model', model);
+              const firebaseApp = initializeApp(app);
 
               // Initialize Firebase App Check
               initializeAppCheck(firebaseApp, {
