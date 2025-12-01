@@ -26,6 +26,7 @@ const jsonString = JSON.stringify({
   app,
   model,
   recaptchaEnterpriseSiteKey: process.env.RECAPTCHA_ENTERPRISE_SITE_KEY || '',
+  vertexAILocation: process.env.VERTEX_AI_LOCATION || 'global',
 }, null, 2);
 
 // Define output file path

@@ -6,14 +6,12 @@ import firebaseConfig from '../../firebase.json';
 import { AI_MODEL } from '../constants/firebase.constant';
 import { ImageAnalysisSchema } from '../schemas/image-analysis.schema';
 
-export function provideFirebaseAiLogic() {
+export function provideFirebaseAILogic() {
     return makeEnvironmentProviders([
         {
             provide: AI_MODEL,
             useFactory: () => {
               const { model, app } = firebaseConfig
-
-              console.log('model', model);
               const firebaseApp = initializeApp(app);
 
               // Initialize Firebase App Check
@@ -31,7 +29,7 @@ export function provideFirebaseAiLogic() {
                   }
               };
 
-              const ai = getAI(firebaseApp, { backend: new VertexAIBackend('global') });
+              const ai = getAI(firebaseApp, { backend: new VertexAIBackend(firebaseConfig.vertexAILocation) });
 
               return getGenerativeModel(ai, {
                   model,
