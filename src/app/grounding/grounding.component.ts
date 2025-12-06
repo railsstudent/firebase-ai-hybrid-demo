@@ -12,18 +12,13 @@ export class GroundingComponent {
   metadata = input<Metadata | undefined>(undefined);
 
   sanitizer = inject(DomSanitizer);
+  renderer2 = inject(Renderer2);
+  document = inject(ElementRef);
 
   safeRenderedContent = computed(() => {
     const unsafeContent = this.metadata()?.renderedContent;
-    if (unsafeContent) {
-      return this.sanitizer.bypassSecurityTrustHtml(unsafeContent);
-    }
-    return '';
+    return unsafeContent ? this.sanitizer.bypassSecurityTrustHtml(unsafeContent) : '';
   });
-
-  renderer2 = inject(Renderer2);
-
-  document = inject(ElementRef);
 
   constructor() {
     afterRenderEffect({
