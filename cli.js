@@ -16,17 +16,10 @@ const app = {
     appId: process.env.FIREBASE_APP_ID,
 };
 
-const model = process.env.GEMINI_MODEL_NAME;
-if (!model) {
-  throw new Error('GEMINI MODEL NAME is blank.');
-}
-
 // Convert data to JSON string with indentation
 const jsonString = JSON.stringify({
   app,
-  model,
   recaptchaEnterpriseSiteKey: process.env.RECAPTCHA_ENTERPRISE_SITE_KEY || '',
-  vertexAILocation: process.env.VERTEX_AI_LOCATION || 'global',
 }, null, 2);
 
 // Define output file path

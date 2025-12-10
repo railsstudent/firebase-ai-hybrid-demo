@@ -1,41 +1,54 @@
-import { makeEnvironmentProviders } from '@angular/core';
-import { GenerationConfig, getAI, getGenerativeModel, VertexAIBackend } from 'firebase/ai';
-import { initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
-import firebaseConfig from '../../firebase.json';
+import { inject, makeEnvironmentProviders } from '@angular/core';
+import { getAI, getGenerativeModel, VertexAIBackend } from 'firebase/ai';
+import { FirebaseApp } from "firebase/app";
+import { getValue, RemoteConfig } from 'firebase/remote-config';
 import { AI_MODEL } from '../constants/firebase.constant';
 import { ImageAnalysisSchema } from '../schemas/image-analysis.schema';
+import { ConfigService } from '../services/config.service';
 
-export function provideFirebaseAILogic() {
+function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConfig) {
+    const model = getValue(remoteConfig, 'geminiModelName').asString();
+    const vertexAILocation = getValue(remoteConfig, 'vertexAILocation'). asString();
+    const includeThoughts = getValue(remoteConfig, 'includeThoughts').asBoolean();
+    const thinkingBudget = getValue(remoteConfig, 'thinkingBudget').asNumber();
+
+    console.log(model, vertexAILocation);
+    console.log('includeThoughts', includeThoughts, 'thinkingBudget', thinkingBudget);
+
+    const ai = getAI(firebaseApp, { backend: new VertexAIBackend(vertexAILocation) });
+
+    return getGenerativeModel(ai, {
+        model,
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: ImageAnalysisSchema,
+          thinkingConfig: {
+            includeThoughts,
+            thinkingBudget,
+          }
+        },
+        tools: [{
+          googleSearch: {}
+        }]
+    });
+}
+
+export function provideFirebase() {
     return makeEnvironmentProviders([
         {
             provide: AI_MODEL,
             useFactory: () => {
-              const { model, app } = firebaseConfig
-              const firebaseApp = initializeApp(app);
+              const configService = inject(ConfigService);
 
-              // Initialize Firebase App Check
-              initializeAppCheck(firebaseApp, {
-                provider: new ReCaptchaEnterpriseProvider(firebaseConfig.recaptchaEnterpriseSiteKey),
-                isTokenAutoRefreshEnabled: true,
-              });
+              if (!configService.remoteConfig) {
+                throw new Error('Remote config does not exist.');
+              }
 
-              const generationConfig: GenerationConfig = {
-                  responseMimeType: 'application/json',
-                  responseSchema: ImageAnalysisSchema,
-                  thinkingConfig: {
-                    includeThoughts: true,
-                    thinkingBudget: 512,
-                  }
-              };
+              if (!configService.firebaseApp) {
+                throw new Error('Firebase App does not exist');
+              }
 
-              const ai = getAI(firebaseApp, { backend: new VertexAIBackend(firebaseConfig.vertexAILocation) });
-
-              return getGenerativeModel(ai, {
-                  model,
-                  generationConfig,
-                  tools: [{ googleSearch: {} }]
-              });
+              return getGenerativeAIModel(configService.firebaseApp, configService.remoteConfig);
             }
         }
     ]);

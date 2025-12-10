@@ -1,10 +1,12 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 
-import { provideFirebaseAILogic } from './ai/providers/firebase.provider';
+import { provideFirebase } from './ai/providers/firebase.provider';
+import { bootstrapFirebase } from './app.bootstrap';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideFirebaseAILogic(),
+    provideAppInitializer(async () => bootstrapFirebase()),
+    provideFirebase(),
   ]
 };
