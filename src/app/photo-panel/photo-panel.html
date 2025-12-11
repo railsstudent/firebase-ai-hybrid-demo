@@ -1,0 +1,16 @@
+<div>
+  @let imageAnalysis = analysis();
+  <app-photo-upload
+    [previewUrl]="previewUrl()"
+    [isLoading]="isLoading()"
+    [acceptedFileTypes]="acceptedTypes"
+    (fileChange)="handleFileChange($event)"
+    (generate)="handleGenerateClick()"
+    (removeFile)="handleFileChange(undefined)"
+  />
+  <app-tags-display [tags]="imageAnalysis?.parsed?.tags || []" />
+  <app-google-search-suggestions
+    [interestingFact]="imageAnalysis?.parsed?.fact"
+    [metadata]="imageAnalysis?.metadata"
+  />
+</div>

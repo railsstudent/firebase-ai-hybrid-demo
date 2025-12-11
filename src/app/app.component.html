@@ -9,24 +9,15 @@
       </p>
     </header>
 
+    @let imageAnalysis = analysis();
     <main class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-sm">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Left Side: Uploader and Image Preview -->
-        <div>
-          <app-photo-upload
-            [previewUrl]="previewUrl()"
-            [isLoading]="isLoading()"
-            [acceptedFileTypes]="acceptedTypes"
-            (fileChange)="handleFileChange($event)"
-            (generate)="handleGenerateClick()"
-            (removeFile)="selectedFile.set(undefined)"
-          />
-          <app-tags-display [tags]="tags()" />
-          <app-google-search-suggestions
-            [interestingFact]="parsed()?.fact"
-            [metadata]="analysis()?.metadata"
-          />
-        </div>
+        <app-photo-panel [(analysis)]="analysis"
+          [(error)]="error"
+          [isLoading]="isLoading()"
+          (emitFile)="handleGenerateClick($event)"
+        />
 
         <!-- Right Side: Results -->
         <div class="flex flex-col justify-center min-h-[20rem]">
@@ -36,7 +27,7 @@
                     <p>{{ error() }}</p>
                 </div>
             }
-            @if (!isLoading() && !error() && !analysis()) {
+            @if (!isLoading() && !error() && !imageAnalysis) {
                 <div class="text-center text-slate-500">
                     <p>Upload an image and click "Generate" to see the results.</p>
                 </div>
@@ -47,16 +38,16 @@
                     <p class="mt-4 text-lg">Firebase AI is thinking...</p>
                 </div>
              }
-             @if (!isLoading() && analysis()) {
+             @if (!isLoading() && imageAnalysis) {
                 <div class="animate-fade-in">
-                  <app-alt-text-display [altText]="alternativeText()" />
-                  <app-recommendations-display [recommendations]="recommendations()" />
+                  <app-alt-text-display [altText]="analysis()?.parsed?.alternativeText || 'Default alternative text'" />
+                  <app-recommendations-display [recommendations]="analysis()?.parsed?.recommendations || []" />
                 </div>
              }
         </div>
       </div>
       <div>
-        <app-thought-summary [thought]="analysis()?.thought || ''" [tokenUsage]="analysis()?.tokenUsage" />
+        <app-thought-summary [thought]="imageAnalysis?.thought || ''" [tokenUsage]="imageAnalysis?.tokenUsage" />
       </div>
     </main>
   </div>
