@@ -12,9 +12,6 @@ function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConf
     const includeThoughts = getValue(remoteConfig, 'includeThoughts').asBoolean();
     const thinkingBudget = getValue(remoteConfig, 'thinkingBudget').asNumber();
 
-    console.log(model, vertexAILocation);
-    console.log('includeThoughts', includeThoughts, 'thinkingBudget', thinkingBudget);
-
     const ai = getAI(firebaseApp, { backend: new VertexAIBackend(vertexAILocation) });
 
     return getGenerativeModel(ai, {
