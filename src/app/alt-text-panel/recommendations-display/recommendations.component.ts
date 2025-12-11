@@ -1,5 +1,5 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
-import { Recommendation } from '../ai/types/image-analysis.type';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Recommendation } from '../../ai/types/recommendation.type';
 
 @Component({
   selector: 'app-recommendations-display',

@@ -1,6 +1,6 @@
 import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, Renderer2 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Metadata } from '../../ai/types/image-analysis.type';
+import { Metadata } from '../../ai/types/grounding.type';
 
 @Component({
   selector: 'app-google-search-suggestions',

@@ -1,6 +1,6 @@
-import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { marked } from 'marked';
-import { TokenUsage } from '../ai/types/image-analysis.type';
+import { TokenUsage } from '../ai/types/token-usage.type';
 
 @Component({
   selector: 'app-thought-summary',

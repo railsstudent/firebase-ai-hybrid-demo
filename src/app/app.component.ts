@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FirebaseService } from './ai/services/firebase.service';
 import { ImageAnalysisResponse } from './ai/types/image-analysis.type';
-import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
-import { SpinnerIconComponent } from './icons/spinner-icon.component';
+import { AltTextPanel } from './alt-text-panel/alt-text-panel';
 import { PhotoPanel } from './photo-panel/photo-panel';
-import { RecommendationsDisplay } from './recommendations-display/recommendations.component';
 import { ThoughtSummaryComponent } from './thought-summary/thought-summary.component';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
@@ -12,11 +10,9 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
 @Component({
   selector: 'app-root',
   imports: [
-    AltTextDisplayComponent,
-    SpinnerIconComponent,
-    RecommendationsDisplay,
     ThoughtSummaryComponent,
     PhotoPanel,
+    AltTextPanel,
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

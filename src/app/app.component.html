@@ -13,38 +13,19 @@
     <main class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-sm">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Left Side: Uploader and Image Preview -->
-        <app-photo-panel [(analysis)]="analysis"
+        <app-photo-panel
+          [(analysis)]="analysis"
           [(error)]="error"
           [isLoading]="isLoading()"
           (emitFile)="handleGenerateClick($event)"
         />
 
         <!-- Right Side: Results -->
-        <div class="flex flex-col justify-center min-h-[20rem]">
-            @if (error()) {
-                <div class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg">
-                    <h3 class="font-bold">Error</h3>
-                    <p>{{ error() }}</p>
-                </div>
-            }
-            @if (!isLoading() && !error() && !imageAnalysis) {
-                <div class="text-center text-slate-500">
-                    <p>Upload an image and click "Generate" to see the results.</p>
-                </div>
-            }
-             @if (isLoading()) {
-                <div class="flex flex-col items-center justify-center text-slate-400">
-                    <app-spinner-icon class="animate-spin h-10 w-10 text-brand-primary" />
-                    <p class="mt-4 text-lg">Firebase AI is thinking...</p>
-                </div>
-             }
-             @if (!isLoading() && imageAnalysis) {
-                <div class="animate-fade-in">
-                  <app-alt-text-display [altText]="analysis()?.parsed?.alternativeText || 'Default alternative text'" />
-                  <app-recommendations-display [recommendations]="analysis()?.parsed?.recommendations || []" />
-                </div>
-             }
-        </div>
+        <app-alt-text-panel
+          [analysis]="analysis()"
+          [error]="error()"
+          [isLoading]="isLoading()"
+        />
       </div>
       <div>
         <app-thought-summary [thought]="imageAnalysis?.thought || ''" [tokenUsage]="imageAnalysis?.tokenUsage" />

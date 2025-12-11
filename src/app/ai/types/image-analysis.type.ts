@@ -1,10 +1,6 @@
-import { WebGroundingChunk } from 'firebase/ai';
-
-export type Recommendation = {
-  id: number;
-  text: string;
-  reason: string;
-}
+import { Metadata } from './grounding.type';
+import { Recommendation } from './recommendation.type';
+import { TokenUsage } from './token-usage.type';
 
 export type ImageAnalysis = {
     alternativeText: string;
@@ -13,22 +9,9 @@ export type ImageAnalysis = {
     fact: string;
 }
 
-export type TokenUsage = {
-  input: number;
-  output: number;
-  thought: number;
-  total: number;
-}
-
-export type Metadata = {
-  citations: WebGroundingChunk[];
-  renderedContent: string;
-  searchQueries: string[];
-};
-
 export type ImageAnalysisResponse = {
   parsed: ImageAnalysis;
-  thought: string,
+  thought: string;
   tokenUsage: TokenUsage;
   metadata: Metadata;
 }

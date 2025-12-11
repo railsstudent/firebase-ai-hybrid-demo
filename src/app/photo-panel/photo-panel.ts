@@ -17,9 +17,8 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhotoPanel implements OnDestroy {
-  analysis = model<ImageAnalysisResponse | undefined>(undefined);
   isLoading = input(false);
-
+  analysis = model<ImageAnalysisResponse | undefined>(undefined);
   error = model<string | undefined>(undefined);
 
   selectedFile = signal<File | undefined>(undefined);
