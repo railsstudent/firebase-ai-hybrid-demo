@@ -2,23 +2,14 @@ import { inject } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig } from 'firebase/remote-config';
+import remoteConfigDefaults from '../../firebase-project/remoteconfig.defaults.json';
 import { ConfigService } from './ai/services/config.service';
 import firebaseConfig from './firebase.json';
 
 function createRemoteConfig(firebaseApp: FirebaseApp) {
-  // Initialize Remote Config and get a reference to the service
   const remoteConfig = getRemoteConfig(firebaseApp);
-
-  // The default and recommended production fetch interval for Remote Config is 12 hours
-  remoteConfig.settings.minimumFetchIntervalMillis = 3600000;
-
-  // Set default values for Remote Config parameters.
-  remoteConfig.defaultConfig = {
-    'geminiModelName': 'gemini-3-pro-preview',
-    'vertexAILocation': 'global',
-    'includeThoughts': true,
-    'thinkingBudget': 512,
-  };
+  remoteConfig.settings.minimumFetchIntervalMillis = 1;
+  remoteConfig.defaultConfig = remoteConfigDefaults;
 
   return remoteConfig;
 }
