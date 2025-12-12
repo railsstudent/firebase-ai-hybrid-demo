@@ -8,7 +8,7 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
+import {onCall, onRequest} from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 
 // Start writing functions
@@ -24,18 +24,57 @@ import * as logger from "firebase-functions/logger";
 // functions should each use functions.runWith({ maxInstances: 10 }) instead.
 // In the v1 API, each function can only serve one request per container, so
 // this will be the maximum concurrent request count.
-setGlobalOptions({maxInstances: 10});
+setGlobalOptions({maxInstances: 2, region: "asia-east1"});
 
-export const helloWorld = onRequest({maxInstances: 2}, (request, response) => {
-  logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
-});
+export const getFirebaseConfig = onRequest((_, response) => {
+  logger.info("getFirebaseConfig called");
 
-export const toUppercase = onRequest({maxInstances: 2}, (request, response) => {
-  logger.info("toUppercase function called", request.query);
-  if (typeof request.query.text !== "string") {
-    response.status(400).send("Please provide a 'text' query parameter.");
+  process.loadEnvFile();
+
+  if (process?.env?.FIREBASE_CONFIG) {
+    const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+    const projectId = firebaseConfig?.projectId;
+    const storageBucket = firebaseConfig?.storageBucket;
+
+    if (!projectId) {
+      logger.error("Project ID not found in FIREBASE_CONFIG");
+      response.status(500).send("Project ID not found in FIREBASE_CONFIG");
+      return;
+    }
+
+    if (!storageBucket) {
+      logger.error("Storage Bucket not found in FIREBASE_CONFIG");
+      response.status(500).send("Storage Bucket not found in FIREBASE_CONFIG");
+      return;
+    }
+
+    const authDomain = `${projectId}.firebaseapp.com`;
+
+    const app = {
+      apiKey: process.env.APP_API_KEY,
+      authDomain,
+      projectId,
+      storageBucket,
+      messagingSenderId: process.env.APP_MESSAGING_SENDER_ID,
+      appId: process.env.APP_ID,
+    };
+
+    response.send(app);
     return;
   }
-  response.send(request.query.text.toUpperCase());
+
+  logger.error("FIREBASE_CONFIG is missing.");
+  response.status(500).send("FIREBASE_CONFIG is missing.");
+});
+
+
+export const getRecaptchaKey = onCall( {enforceAppCheck: true}, () => {
+  logger.info("getRecaptchaKey called");
+
+  process.loadEnvFile();
+  if (process.env.RECAPTCHA_ENTERPRISE_SITE_KEY) {
+    return {recaptchaKey: process.env.RECAPTCHA_ENTERPRISE_SITE_KEY};
+  }
+
+  throw new Error("RECAPTCHA_ENTERPRISE_SITE_KEY is missing.");
 });

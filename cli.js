@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
-import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
-dotenv.config();
+process.loadEnvFile()
 
 // Data to be written to JSON file
 const app = {
