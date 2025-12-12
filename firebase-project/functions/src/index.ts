@@ -24,9 +24,18 @@ import * as logger from "firebase-functions/logger";
 // functions should each use functions.runWith({ maxInstances: 10 }) instead.
 // In the v1 API, each function can only serve one request per container, so
 // this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({maxInstances: 10});
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export const helloWorld = onRequest({maxInstances: 2}, (request, response) => {
+  logger.info("Hello logs!", {structuredData: true});
+  response.send("Hello from Firebase!");
+});
+
+export const toUppercase = onRequest({maxInstances: 2}, (request, response) => {
+  logger.info("toUppercase function called", request.query);
+  if (typeof request.query.text !== "string") {
+    response.status(400).send("Please provide a 'text' query parameter.");
+    return;
+  }
+  response.send(request.query.text.toUpperCase());
+});
