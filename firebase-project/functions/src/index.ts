@@ -8,7 +8,7 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onCall, onRequest} from "firebase-functions/https";
+import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
 // Start writing functions
@@ -26,55 +26,54 @@ import * as logger from "firebase-functions/logger";
 // this will be the maximum concurrent request count.
 setGlobalOptions({maxInstances: 2, region: "asia-east1"});
 
-export const getFirebaseConfig = onRequest((_, response) => {
+export const getFirebaseConfig = onRequest( {cors: true}, (_, response) => {
   logger.info("getFirebaseConfig called");
 
   process.loadEnvFile();
 
-  if (process?.env?.FIREBASE_CONFIG) {
-    const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-    const projectId = firebaseConfig?.projectId;
-    const storageBucket = firebaseConfig?.storageBucket;
+  if (!process.env.RECAPTCHA_ENTERPRISE_SITE_KEY) {
+    const err = "RECAPTCHA_ENTERPRISE_SITE_KEY is missing.";
+    logger.error(err);
+    response.status(500).send(err);
+    return;
+  }
 
-    if (!projectId) {
-      logger.error("Project ID not found in FIREBASE_CONFIG");
-      response.status(500).send("Project ID not found in FIREBASE_CONFIG");
-      return;
-    }
+  if (!process.env.FIREBASE_CONFIG) {
+    const error = "FIREBASE_CONFIG is missing.";
+    logger.error(error);
+    response.status(500).send(error);
+    return;
+  }
 
-    if (!storageBucket) {
-      logger.error("Storage Bucket not found in FIREBASE_CONFIG");
-      response.status(500).send("Storage Bucket not found in FIREBASE_CONFIG");
-      return;
-    }
+  const recaptchaSiteKey = process.env.RECAPTCHA_ENTERPRISE_SITE_KEY;
+  const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+  const projectId = firebaseConfig?.projectId;
+  const storageBucket = firebaseConfig?.storageBucket;
 
-    const authDomain = `${projectId}.firebaseapp.com`;
+  if (!projectId) {
+    logger.error("Project ID not found in FIREBASE_CONFIG");
+    response.status(500).send("Project ID not found in FIREBASE_CONFIG");
+    return;
+  }
 
-    const app = {
+  if (!storageBucket) {
+    logger.error("Storage Bucket not found in FIREBASE_CONFIG");
+    response.status(500).send("Storage Bucket not found in FIREBASE_CONFIG");
+    return;
+  }
+
+  const jsonString = JSON.stringify({
+    app: {
       apiKey: process.env.APP_API_KEY,
-      authDomain,
+      authDomain: `${projectId}.firebaseapp.com`,
       projectId,
       storageBucket,
       messagingSenderId: process.env.APP_MESSAGING_SENDER_ID,
       appId: process.env.APP_ID,
-    };
+    },
+    recaptchaSiteKey,
+  }, null, 2);
 
-    response.send(app);
-    return;
-  }
-
-  logger.error("FIREBASE_CONFIG is missing.");
-  response.status(500).send("FIREBASE_CONFIG is missing.");
+  response.send(jsonString);
 });
 
-
-export const getRecaptchaKey = onCall( {enforceAppCheck: true}, () => {
-  logger.info("getRecaptchaKey called");
-
-  process.loadEnvFile();
-  if (process.env.RECAPTCHA_ENTERPRISE_SITE_KEY) {
-    return {recaptchaKey: process.env.RECAPTCHA_ENTERPRISE_SITE_KEY};
-  }
-
-  throw new Error("RECAPTCHA_ENTERPRISE_SITE_KEY is missing.");
-});

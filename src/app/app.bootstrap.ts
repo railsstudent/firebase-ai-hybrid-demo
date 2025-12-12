@@ -1,32 +1,39 @@
+import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { FirebaseApp, initializeApp } from 'firebase/app';
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig } from 'firebase/remote-config';
+import { lastValueFrom } from 'rxjs';
+import config from '../../firebase-project/config.json';
 import remoteConfigDefaults from '../../firebase-project/remoteconfig.defaults.json';
 import { ConfigService } from './ai/services/config.service';
-import firebaseConfig from './firebase.json';
 
-function createRemoteConfig(firebaseApp: FirebaseApp) {
-  const remoteConfig = getRemoteConfig(firebaseApp);
-  remoteConfig.settings.minimumFetchIntervalMillis = 1;
-  remoteConfig.defaultConfig = remoteConfigDefaults;
+async function fetchRemoteConfig(firebaseApp: FirebaseApp) {
+    const remoteConfig = getRemoteConfig(firebaseApp);
+    remoteConfig.settings.minimumFetchIntervalMillis = 3600000;;
+    remoteConfig.defaultConfig = remoteConfigDefaults;
+    await fetchAndActivate(remoteConfig);
+    return remoteConfig;
+}
 
-  return remoteConfig;
+async function loadFirebaseConfig() {
+    const httpService = inject(HttpClient);
+    const firebaseConfig$ = httpService.get<{ app: FirebaseOptions, recaptchaSiteKey: string }>(`${config.appUrl}/getFirebaseConfig`);
+    const firebaseConfig = await lastValueFrom(firebaseConfig$);
+    return firebaseConfig;
 }
 
 export async function bootstrapFirebase() {
     try {
       const configService = inject(ConfigService);
-      const firebaseApp = initializeApp(firebaseConfig.app);
+      const { app, recaptchaSiteKey } = await loadFirebaseConfig();
+      const firebaseApp = initializeApp(app);
+      const remoteConfig = await fetchRemoteConfig(firebaseApp);
 
-      // Initialize Firebase App Check
       initializeAppCheck(firebaseApp, {
-        provider: new ReCaptchaEnterpriseProvider(firebaseConfig.recaptchaEnterpriseSiteKey),
+        provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
         isTokenAutoRefreshEnabled: true,
       });
-
-      const remoteConfig = createRemoteConfig(firebaseApp);
-      await fetchAndActivate(remoteConfig);
 
       configService.loadConfig(firebaseApp, remoteConfig);
     } catch (err) {
