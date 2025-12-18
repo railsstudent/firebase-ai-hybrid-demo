@@ -1,17 +1,18 @@
-import config from '@/firebase-project/config.json';
 import remoteConfigDefaults from '@/firebase-project/remoteconfig.defaults.json';
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
-import { fetchAndActivate, getRemoteConfig } from 'firebase/remote-config';
+import { connectFunctionsEmulator, Functions, getFunctions } from "firebase/functions";
+import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'firebase/remote-config';
 import { lastValueFrom } from 'rxjs';
+import config from '../../public/config.json';
 import { ConfigService } from './ai/services/config.service';
 import { FirebaseConfigResponse } from './ai/types/firebase-config.type';
 
 async function fetchRemoteConfig(firebaseApp: FirebaseApp) {
     const remoteConfig = getRemoteConfig(firebaseApp);
-    remoteConfig.settings.minimumFetchIntervalMillis = 3600000;;
+    remoteConfig.settings.minimumFetchIntervalMillis = 60000;;
     remoteConfig.defaultConfig = remoteConfigDefaults;
     await fetchAndActivate(remoteConfig);
     return remoteConfig;
@@ -36,9 +37,23 @@ export async function bootstrapFirebase() {
         isTokenAutoRefreshEnabled: true,
       });
 
+      const functionRegion = getValue(remoteConfig, 'functionRegion').asString();
+      const functions = getFunctions(firebaseApp, functionRegion);
+      console.log('bootstrapFirebase -> functions region', functions.region);
+      connectEmulators(functions, remoteConfig);
+
       configService.loadConfig(firebaseApp, remoteConfig);
     } catch (err) {
       console.error('Remote Config fetch failed', err);
       throw err;
     }
+}
+
+function connectEmulators(functions: Functions, remoteConfig: RemoteConfig) {
+  if (location.hostname === 'localhost') {
+    const host = getValue(remoteConfig, 'functionEmulatorHost').asString();
+    const port = getValue(remoteConfig, 'functionEmulatorPort').asNumber();
+    console.log('functionEmulator', `${host}:${port}`);
+    connectFunctionsEmulator(functions, host, port);
+  }
 }
