@@ -38,11 +38,13 @@ export function provideFirebase() {
               const configService = inject(ConfigService);
 
               if (!configService.remoteConfig) {
-                throw new Error('Remote config does not exist.');
+                console.error('Remote config does not exist.');
+                return undefined;
               }
 
               if (!configService.firebaseApp) {
-                throw new Error('Firebase App does not exist');
+                console.error('Firebase App does not exist');
+                return undefined;
               }
 
               return getGenerativeAIModel(configService.firebaseApp, configService.remoteConfig);

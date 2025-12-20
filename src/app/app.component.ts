@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ConfigService } from './ai/services/config.service';
 import { FirebaseService } from './ai/services/firebase.service';
 import { ImageAnalysisResponse } from './ai/types/image-analysis.type';
 import { AltTextPanel } from './alt-text-panel/alt-text-panel';
@@ -18,13 +19,20 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
+  private readonly firebaseAiService = inject(FirebaseService);
+  private readonly configService = inject(ConfigService);
+
   analysis = signal<ImageAnalysisResponse | undefined>(undefined);
   isLoading = signal(false);
   error = signal<string | undefined>(undefined);
 
   readonly acceptedTypes = ACCEPTED_IMAGE_TYPES;
 
-  firebaseAiService = inject(FirebaseService);
+  hasNoFirebase = computed(() =>
+    !this.configService.firebaseApp ||
+    !this.configService.remoteConfig ||
+    !this.configService.functions
+  );
 
   async handleGenerateClick(file: File | undefined) {
     if (!file) {

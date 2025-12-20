@@ -9,27 +9,31 @@
       </p>
     </header>
 
-    @let imageAnalysis = analysis();
-    <main class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-sm">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Left Side: Uploader and Image Preview -->
-        <app-photo-panel
-          [(analysis)]="analysis"
-          [(error)]="error"
-          [isLoading]="isLoading()"
-          (emitFile)="handleGenerateClick($event)"
-        />
+    @if (hasNoFirebase()) {
+      <p class="text-lg text-slate-400">Firebase initialization failed.</p>
+    } @else {
+      @let imageAnalysis = analysis();
+      <main class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-sm">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Left Side: Uploader and Image Preview -->
+          <app-photo-panel
+            [(analysis)]="analysis"
+            [(error)]="error"
+            [isLoading]="isLoading()"
+            (emitFile)="handleGenerateClick($event)"
+          />
 
-        <!-- Right Side: Results -->
-        <app-alt-text-panel
-          [analysis]="analysis()"
-          [error]="error()"
-          [isLoading]="isLoading()"
-        />
-      </div>
-      <div>
-        <app-thought-summary [thought]="imageAnalysis?.thought || ''" [tokenUsage]="imageAnalysis?.tokenUsage" />
-      </div>
-    </main>
+          <!-- Right Side: Results -->
+          <app-alt-text-panel
+            [analysis]="analysis()"
+            [error]="error()"
+            [isLoading]="isLoading()"
+          />
+        </div>
+        <div>
+          <app-thought-summary [thought]="imageAnalysis?.thought || ''" [tokenUsage]="imageAnalysis?.tokenUsage" />
+        </div>
+      </main>
+    }
   </div>
 </div>

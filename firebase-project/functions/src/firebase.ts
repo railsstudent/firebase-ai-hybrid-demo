@@ -8,50 +8,32 @@
  */
 
 import logger from "firebase-functions/logger";
-import express from "express";
 import { validate } from "./validate";
 
 /**
  *
  * @param {NodeJS.ProcessEnv} env         a dicitonary of environment variables
- * @param {express.Response} response    express response object
  * @return {object} an object containing validated environment variables or undefined if validation fails
  */
-function validateFirebaseConfigFields(env: NodeJS.ProcessEnv, response: express.Response) {
-  const apiKey = validate(env.APP_API_KEY, "API Key", response);
-  if (!apiKey) {
-    return undefined;
+function validateFirebaseConfigFields(env: NodeJS.ProcessEnv) {
+  const missingKeys: string[] = [];
+  const apiKey = validate(env.APP_API_KEY, "API Key", missingKeys);
+  const appId = validate(env.APP_ID, "App Id", missingKeys);
+  const messagingSenderId = validate(env.APP_MESSAGING_SENDER_ID, "Messaging Sender ID", missingKeys);
+  const recaptchaSiteKey = validate(env.RECAPTCHA_ENTERPRISE_SITE_KEY, "Recaptcha site key", missingKeys);
+  const strFirebaseConfig = validate(env.FIREBASE_CONFIG, "Firebase config", missingKeys);
+
+  let projectId = "";
+  let storageBucket = "";
+  if (strFirebaseConfig) {
+    const firebaseConfig = JSON.parse(strFirebaseConfig);
+
+    projectId = validate(firebaseConfig?.projectId, "Project ID", missingKeys);
+    storageBucket = validate(firebaseConfig?.storageBucket, "Storage Bucket", missingKeys);
   }
 
-  const appId = validate(env.APP_ID, "App Id", response);
-  if (!appId) {
-    return undefined;
-  }
-
-  const messagingSenderId = validate(env.APP_MESSAGING_SENDER_ID, "Messaging Sender ID", response);
-  if (!messagingSenderId) {
-    return undefined;
-  }
-
-  const recaptchaSiteKey = validate(env.RECAPTCHA_ENTERPRISE_SITE_KEY, "Recaptcha site key", response);
-  if (!recaptchaSiteKey) {
-    return undefined;
-  }
-
-  const strFirebaseConfig = validate(env.FIREBASE_CONFIG, "Firebase config", response);
-  if (!strFirebaseConfig) {
-    return undefined;
-  }
-
-  const firebaseConfig = JSON.parse(strFirebaseConfig);
-  const projectId = validate(firebaseConfig?.projectId, "Project ID", response);
-  if (!projectId) {
-    return undefined;
-  }
-
-  const storageBucket = validate(firebaseConfig?.storageBucket, "Storage Bucket", response);
-  if (!storageBucket) {
-    return undefined;
+  if (missingKeys.length > 0) {
+    throw new Error(`Missing environment variables: ${missingKeys.join(", ")}`);
   }
 
   return {
@@ -64,14 +46,14 @@ function validateFirebaseConfigFields(env: NodeJS.ProcessEnv, response: express.
   };
 }
 
-export const getFirebaseConfigFunction = (response: express.Response) => {
+export const getFirebaseConfigFunction = () => {
   logger.info("getFirebaseConfig called");
 
   process.loadEnvFile();
 
-  const variables = validateFirebaseConfigFields(process.env, response);
-  if (!variables) {
-    return;
+  const variables = validateFirebaseConfigFields(process.env);
+  if (!variables || !variables.projectId) {
+    return undefined;
   }
 
   const { recaptchaSiteKey, ...rest } = variables;
@@ -80,11 +62,9 @@ export const getFirebaseConfigFunction = (response: express.Response) => {
     ...rest,
     authDomain: `${rest.projectId}.firebaseapp.com`,
   };
-  const config = JSON.stringify({
+
+  return {
     app,
     recaptchaSiteKey,
-  });
-
-  response.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
-  response.send(config);
+  };
 };

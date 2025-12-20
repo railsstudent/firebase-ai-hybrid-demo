@@ -29,9 +29,6 @@ export const getFirebaseConfig = onRequest( { cors },
     try {
       const referer = request.header("referer");
       const origin = request.header("origin");
-
-      console.log("referer", referer, "origin", origin,
-         "whitelist", whitelist, "cors", cors);
       if (!referer) {
         response.status(401).send("Unauthorized, invalid referer.");
         return;
@@ -52,10 +49,13 @@ export const getFirebaseConfig = onRequest( { cors },
         return;
       }
 
-      getFirebaseConfigFunction(response);
+      const config = getFirebaseConfigFunction();
+
+      response.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
+      response.json(config);
     } catch (err) {
       console.error(err);
-      response.status(401).send("Unauthorized");
+      response.status(401).send("Internal Server Error");
     }
   }
 );
