@@ -1,10 +1,10 @@
 {
   "parameters": {
-    "geminiModelName": {
+    "functionEmulatorHost": {
       "defaultValue": {
-        "value": "gemini-3-flash-preview"
+        "value": "localhost"
       },
-      "description": "Germini Model Name",
+      "description": "Function emulator host",
       "valueType": "STRING"
     },
     "thinkingBudget": {
@@ -14,12 +14,12 @@
       "description": "Thinking budget of Nano Banana Pro",
       "valueType": "NUMBER"
     },
-    "geminiImageModelName": {
+    "functionEmulatorPort": {
       "defaultValue": {
-        "value": "gemini-3-pro-image-preview"
+        "value": "5001"
       },
-      "description": "Gemini Image Model Name",
-      "valueType": "STRING"
+      "description": "Function emulator port number",
+      "valueType": "NUMBER"
     },
     "includeThoughts": {
       "defaultValue": {
@@ -28,20 +28,6 @@
       "description": "Whether or notNano Banana Pro generates thinking summaries",
       "valueType": "BOOLEAN"
     },
-    "functionEmulatorHost": {
-      "defaultValue": {
-        "value": "localhost"
-      },
-      "description": "Function emulator host",
-      "valueType": "STRING"
-    },
-    "glassBottleSouvenirTemplateId": {
-      "defaultValue": {
-        "value": "glass-bottle-souvenir-v0-0-1"
-      },
-      "description": "Glass bottle souvenir template id",
-      "valueType": "STRING"
-    },
     "vertexAILocation": {
       "defaultValue": {
         "value": "global"
@@ -49,24 +35,24 @@
       "description": "Location of Firebase AI Logic VertexAI Backend ",
       "valueType": "STRING"
     },
-    "functionEmulatorPort": {
-      "defaultValue": {
-        "value": "5001"
-      },
-      "description": "Function emulator port number",
-      "valueType": "NUMBER"
-    },
     "functionRegion": {
       "defaultValue": {
         "value": "asia-east2"
       },
       "description": "Location where the functions are deployed",
       "valueType": "STRING"
+    },
+    "geminiModelName": {
+      "defaultValue": {
+        "value": "gemini-3-flash-preview"
+      },
+      "description": "Germini Model Name",
+      "valueType": "STRING"
     }
   },
   "version": {
-    "versionNumber": "32",
-    "updateTime": "2025-12-18T23:39:24.735806Z",
+    "versionNumber": "2",
+    "updateTime": "2025-12-25T10:23:49.765304Z",
     "updateUser": {
       "email": "cleung334@gmail.com"
     },

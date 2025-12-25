@@ -1,11 +1,9 @@
 {
-  "geminiModelName": "gemini-3-flash-preview",
-  "thinkingBudget": "512",
-  "geminiImageModelName": "gemini-3-pro-image-preview",
-  "includeThoughts": "true",
   "functionEmulatorHost": "localhost",
-  "glassBottleSouvenirTemplateId": "glass-bottle-souvenir-v0-0-1",
-  "vertexAILocation": "global",
+  "thinkingBudget": "512",
   "functionEmulatorPort": "5001",
-  "functionRegion": "asia-east2"
+  "includeThoughts": "true",
+  "vertexAILocation": "global",
+  "functionRegion": "asia-east2",
+  "geminiModelName": "gemini-3-flash-preview"
 }
