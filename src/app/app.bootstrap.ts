@@ -5,6 +5,7 @@ import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { connectFunctionsEmulator, Functions, getFunctions } from "firebase/functions";
 import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'firebase/remote-config';
+import { connectStorageEmulator, getStorage } from 'firebase/storage';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import config from '../../public/config.json';
 import { ConfigService } from './ai/services/config.service';
@@ -56,5 +57,10 @@ function connectEmulators(functions: Functions, remoteConfig: RemoteConfig) {
     const port = getValue(remoteConfig, 'functionEmulatorPort').asNumber();
     console.log('functionEmulator', `${host}:${port}`);
     connectFunctionsEmulator(functions, host, port);
+
+    const storageHost = getValue(remoteConfig, 'storageEmulatorHost').asString();
+    const storagePort = getValue(remoteConfig, 'storageEmulatorPort').asNumber();
+    console.log('functionEmulator', `${host}:${port}`);
+    connectStorageEmulator(getStorage(), storageHost, storagePort);
   }
 }

@@ -1,5 +1,7 @@
 {
   "functionEmulatorHost": "localhost",
+  "storageEmulatorHost": "localhost",
+  "storageEmulatorPort": "9199",
   "thinkingBudget": "512",
   "functionEmulatorPort": "5001",
   "includeThoughts": "true",

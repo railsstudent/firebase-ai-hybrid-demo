@@ -4,7 +4,21 @@
       "defaultValue": {
         "value": "localhost"
       },
-      "description": "Function emulator host",
+      "description": "Function emulator host name",
+      "valueType": "STRING"
+    },
+    "storageEmulatorHost": {
+      "defaultValue": {
+        "value": "localhost"
+      },
+      "description": "Storage emulator host name",
+      "valueType": "STRING"
+    },
+    "storageEmulatorPort": {
+      "defaultValue": {
+        "value": "9199"
+      },
+      "description": "Storage emulator port number",
       "valueType": "STRING"
     },
     "thinkingBudget": {
@@ -51,8 +65,8 @@
     }
   },
   "version": {
-    "versionNumber": "2",
-    "updateTime": "2025-12-25T10:23:49.765304Z",
+    "versionNumber": "3",
+    "updateTime": "2025-12-25T10:50:16.532468Z",
     "updateUser": {
       "email": "cleung334@gmail.com"
     },
