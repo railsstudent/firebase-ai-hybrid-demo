@@ -6,7 +6,9 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      allow read, write: if false;
+      allow read: if resource.name.matches('\\.mp3');
+      allow write: if request.resource.name.matches('\\.mp3')
+                   && request.resource.contentType == 'audio/mp3';
     }
   }
 }

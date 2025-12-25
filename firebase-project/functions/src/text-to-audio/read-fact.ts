@@ -25,8 +25,6 @@ Your goal is to generate text and formatting that mimics the voice of Darth Vade
 a mechanical respirator sound marker: [Mechanical Breath: Inhale/Exhale]`,
 };
 
-const storage = getStorage();
-
 /**
  *
  * @param {GenerateAudioRequest} data      Generate video request object
@@ -64,7 +62,7 @@ async function generateAudio(aiTTS: AIAudio, contents: string) {
       contents,
       config: DEFAULT_CONFIG,
     });
-    const uploadTask = uploadAudio(response);
+    const uploadTask = uploadAudioResumable(response);
 
     const audioUriPromise = new Promise<string>((resolve, reject) => {
       uploadTask.on("state_changed",
@@ -132,7 +130,7 @@ function logUploadProgress(snapshot: UploadTaskSnapshot) {
  * @param {GenerateContentResponse} response AI generate content response
  * @return {UploadTask} upload task
  */
-function uploadAudio(response: GenerateContentResponse) {
+function uploadAudioResumable(response: GenerateContentResponse) {
   const inlineData = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
   const data = inlineData?.data;
   const mimeType = inlineData?.mimeType;
@@ -145,6 +143,7 @@ function uploadAudio(response: GenerateContentResponse) {
   const filename = `audio.${extension}`;
 
   const arrayBuffer = Buffer.from(data, "base64");
+  const storage = getStorage();
   const audioRef = ref(storage, `${Date.now()}/${filename}`);
 
   return uploadBytesResumable(audioRef, arrayBuffer, { contentType: mimeType });

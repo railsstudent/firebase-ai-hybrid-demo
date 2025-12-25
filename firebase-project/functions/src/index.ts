@@ -59,3 +59,6 @@ export const getFirebaseConfig = onRequest( { cors },
     }
   }
 );
+
+// eslint-disable-next-line  @typescript-eslint/no-require-imports
+exports.textToAudio = require("./text-to-audio");
