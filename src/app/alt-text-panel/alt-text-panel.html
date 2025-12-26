@@ -23,4 +23,5 @@
           <app-recommendations-display [recommendations]="analysis()?.parsed?.recommendations || []" />
         </div>
       }
+      <app-grounding [metadata]="imageAnalysis?.metadata" />
 </div>

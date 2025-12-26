@@ -3,6 +3,7 @@ import { ImageAnalysisResponse } from '../ai/types/image-analysis.type';
 import { SpinnerIconComponent } from '../icons/spinner-icon.component';
 import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { RecommendationsDisplay } from './recommendations-display/recommendations.component';
+import { GroundingComponent } from './grounding/grounding.component';
 
 @Component({
   selector: 'app-alt-text-panel',
@@ -10,6 +11,7 @@ import { RecommendationsDisplay } from './recommendations-display/recommendation
     AltTextDisplayComponent,
     SpinnerIconComponent,
     RecommendationsDisplay,
+    GroundingComponent,
   ],
   templateUrl: './alt-text-panel.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
