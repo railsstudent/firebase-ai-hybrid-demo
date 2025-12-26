@@ -34,7 +34,6 @@ function convertToWav(rawData: string, mimeType: string) {
 function parseMimeType(mimeType : string) {
   const [fileType, ...params] = mimeType.split(";").map((s) => s.trim());
   const format = fileType.split("/")[1];
-  console.log("mimeType", mimeType, "format", format);
 
   const options : Partial<WavConversionOptions> = {
     numChannels: 1,
@@ -42,7 +41,6 @@ function parseMimeType(mimeType : string) {
 
   if (format && format.startsWith("L")) {
     const bits = parseInt(format.slice(1), 10);
-    console.log("bits", bits);
     if (!isNaN(bits)) {
       options.bitsPerSample = bits;
     }
