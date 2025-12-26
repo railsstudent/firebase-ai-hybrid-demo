@@ -9,6 +9,7 @@ const options = {
 };
 
 export const readFact = onCall( options,
-  ({ data }) => readFactFunction(data)
+  ({ data, acceptsStreaming }) =>
+    acceptsStreaming ? readFactFunction(data) : readFactFunction(data)
 );
 
