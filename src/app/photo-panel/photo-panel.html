@@ -1,5 +1,6 @@
 <div>
   @let imageAnalysis = analysis();
+  @let parsed = imageAnalysis?.parsed;
   <app-photo-upload
     [previewUrl]="previewUrl()"
     [isLoading]="isLoading()"
@@ -8,9 +9,7 @@
     (generate)="handleGenerateClick()"
     (removeFile)="handleFileChange(undefined)"
   />
-  <app-tags-display [tags]="imageAnalysis?.parsed?.tags || []" />
-  <app-google-search-suggestions
-    [interestingFact]="imageAnalysis?.parsed?.fact"
-    [metadata]="imageAnalysis?.metadata"
-  />
+  <app-tags-display [tags]="parsed?.tags || []" />
+  <app-obscure-fact [interestingFact]="parsed?.fact" />
+  <app-grounding [metadata]="imageAnalysis?.metadata" />
 </div>

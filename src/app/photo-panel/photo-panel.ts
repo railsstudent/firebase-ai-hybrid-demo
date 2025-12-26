@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, OnDestroy, output, signal } from '@angular/core';
 import { ImageAnalysisResponse } from '../ai/types/image-analysis.type';
 import { GroundingComponent } from './grounding/grounding.component';
+import { ObscureFactComponent } from './obscure-fact/obscure-fact.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';
 
@@ -12,6 +13,7 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
     PhotoUploadComponent,
     TagsDisplayComponent,
     GroundingComponent,
+    ObscureFactComponent
   ],
   templateUrl: './photo-panel.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

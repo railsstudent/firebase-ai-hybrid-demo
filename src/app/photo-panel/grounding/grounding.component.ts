@@ -1,17 +1,15 @@
 import { SpeechService } from '@/ai/services/speech.service';
-import { SpinnerIconComponent } from '@/icons/spinner-icon.component';
 import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, Renderer2, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Metadata } from '../../ai/types/grounding.type';
 
 @Component({
-  selector: 'app-google-search-suggestions',
+  selector: 'app-grounding',
   templateUrl: './grounding.component.html',
-  imports: [SpinnerIconComponent],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroundingComponent {
-  interestingFact = input<string | undefined>(undefined);
   metadata = input<Metadata | undefined>(undefined);
 
   sanitizer = inject(DomSanitizer);
@@ -51,22 +49,6 @@ export class GroundingComponent {
           this.renderer2.setAttribute(tag, 'rel', 'noopener noreferrer');
         }
       }
-    }
-  }
-
-  async generateSpeech() {
-    try {
-      this.isLoading.set(true);
-      this.audioUrl.set(undefined);
-      const fact = this.interestingFact();
-      if (fact) {
-        const uri = await this.speechService.generateAudio(fact);
-        this.audioUrl.set(uri);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.isLoading.set(false);
     }
   }
 }
