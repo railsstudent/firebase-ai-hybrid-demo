@@ -1,11 +1,11 @@
 import { SpeechService } from '@/ai/services/speech.service';
-import { SpinnerIconComponent } from '@/icons/spinner-icon.component';
-import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnDestroy, signal } from '@angular/core';
+import { TextToSpeechComponent } from '../text-to-speech/text-to-speech.component';
 
 @Component({
   selector: 'app-obscure-fact',
   templateUrl: './obscure-fact.component.html',
-  imports: [SpinnerIconComponent],
+  imports: [TextToSpeechComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObscureFactComponent implements OnDestroy {
@@ -13,50 +13,64 @@ export class ObscureFactComponent implements OnDestroy {
 
   speechService = inject(SpeechService);
 
-  isLoading = signal(false);
-  audioUrl = signal<string | undefined>(undefined)
+  isLoadingSync = signal(false);
+  isLoadingStream = signal(false);
+  audioSyncUrl = signal<string | undefined>(undefined)
   audioBlobUrl = signal<string | undefined>(undefined)
+
+  audioUrl = computed(() => {
+    if (this.audioSyncUrl()) {
+      return this.audioSyncUrl();
+    } else if (this.audioBlobUrl()) {
+      return this.audioBlobUrl();
+    }
+
+    return undefined;
+  })
 
   resetAudio() {
     this.audioBlobUrl.set(undefined);
-    this.audioUrl.set(undefined);
+    this.audioSyncUrl.set(undefined);
   }
 
-  async generateSpeech() {
-    try {
-      this.isLoading.set(true);
-      this.resetAudio();
-      const fact = this.interestingFact();
-      if (fact) {
-        const uri = await this.speechService.generateAudio(fact);
-        this.audioUrl.set(uri);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
-
-  async generateSpeechStream() {
-    try {
-      this.isLoading.set(true);
-
+  async generateSpeech({ isStream }: { isStream: boolean }) {
+    const fact = this.interestingFact();
+    if (fact) {
       const blobUrl = this.audioBlobUrl();
-      this.resetAudio();
       if (blobUrl) {
         URL.revokeObjectURL(blobUrl);
       }
 
-      const fact = this.interestingFact();
-      if (fact) {
-        const uri = await this.speechService.generateAudioStream(fact);
-        this.audioBlobUrl.set(uri);
+      this.resetAudio();
+      if (isStream) {
+        this.generateSpeechStream(fact);
+      } else {
+        this.generateSpeechSync(fact);
       }
+    }
+  }
+
+  async generateSpeechSync(fact: string) {
+    try {
+      this.isLoadingSync.set(true);
+      const uri = await this.speechService.generateAudio(fact);
+      this.audioSyncUrl.set(uri);
     } catch (e) {
       console.error(e);
     } finally {
-      this.isLoading.set(false);
+      this.isLoadingSync.set(false);
+    }
+  }
+
+  async generateSpeechStream(fact: string) {
+    try {
+      this.isLoadingStream.set(true);
+      const uri = await this.speechService.generateAudioStream(fact);
+      this.audioBlobUrl.set(uri);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.isLoadingStream.set(false);
     }
   }
 
