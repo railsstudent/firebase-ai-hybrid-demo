@@ -21,4 +21,30 @@ export class SpeechService  {
       const { data: audioUri } = await readFactFunction(text);
       return audioUri;
     }
+
+    async generateAudioStream(text: string) {
+      if (!this.configService.functions) {
+        throw new Error('Functions not initialized');
+      }
+
+      const functions = this.configService.functions;
+      const readFactFunction = httpsCallable<string, ArrayBuffer, ArrayBuffer>(functions, 'textToAudio-readFact');
+
+      const audioBuffer: ArrayBuffer[] = [];
+      const { stream, data } = await readFactFunction.stream(text);
+      for await (const audioChunk of stream) {
+        if (audioChunk) {
+          audioBuffer.push(audioChunk);
+        }
+      }
+
+      const finalChunk = await data;
+      if (finalChunk) {
+        audioBuffer.push(finalChunk);
+      }
+
+      const combined = await new Blob(audioBuffer).arrayBuffer();
+      const blobUrl = URL.createObjectURL(new Blob([combined], { type: 'audio/wav' }));
+      return blobUrl;
+    }
 }
