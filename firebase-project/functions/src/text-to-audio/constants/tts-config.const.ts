@@ -1,4 +1,4 @@
-import { GenerateContentConfig } from '@google/genai';
+import { GenerateContentConfig } from "@google/genai";
 
 export const KORE_VOICE_CONFIG: GenerateContentConfig = {
   responseModalities: [
@@ -13,14 +13,14 @@ export const KORE_VOICE_CONFIG: GenerateContentConfig = {
   },
 };
 
-export const ENCELADUS_VOICE_CONFIG: GenerateContentConfig = {
+export const PUCK_VOICE_CONFIG: GenerateContentConfig = {
   responseModalities: [
     "audio",
   ],
   speechConfig: {
     voiceConfig: {
       prebuiltVoiceConfig: {
-        voiceName: "Enceladus",
+        voiceName: "Puck",
       },
     },
   },

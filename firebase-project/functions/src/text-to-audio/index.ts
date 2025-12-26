@@ -1,5 +1,5 @@
 import { onCall } from "firebase-functions/https";
-import { readFactFunction } from "./read-fact";
+import { readFactFunction, readFactFunctionStream } from "./read-fact";
 
 const cors = process.env.WHITELIST ? process.env.WHITELIST.split(",") : true;
 const options = {
@@ -9,7 +9,8 @@ const options = {
 };
 
 export const readFact = onCall( options,
-  ({ data, acceptsStreaming }) =>
-    acceptsStreaming ? readFactFunction(data) : readFactFunction(data)
+  ({ data, acceptsStreaming }, response) =>
+    acceptsStreaming && response ? readFactFunctionStream(data, response) :
+      readFactFunction(data)
 );
 
