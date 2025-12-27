@@ -63,9 +63,7 @@ export async function readFactFunctionStream(text: string, response: CallableRes
 async function generateAudio(aiTTS: AIAudio, text: string) {
   try {
     const { ai, model } = aiTTS;
-    const contents = `
-${DARTH_VADER_TONE}
-${text}`;
+    const contents = `${DARTH_VADER_TONE.trim()} ${text.trim()}`;
 
     const response = await ai.models.generateContent(createAudioParams(model, contents, KORE_VOICE_CONFIG));
 
@@ -85,9 +83,7 @@ ${text}`;
 async function generateAudioStream(aiTTS: AIAudio, text: string, response: CallableResponse<unknown>) {
   try {
     const { ai, model } = aiTTS;
-    const contents = `
-${LIGHT_TONE}
-${text}`;
+    const contents = `${LIGHT_TONE.trim()} ${text.trim()}`;
 
     const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
 
@@ -111,6 +107,7 @@ ${text}`;
 
     // return the wave header array;
     if (options && rawDataLength > 0) {
+      console.log("rawDataLength", rawDataLength);
       const header = createWavHeader(rawDataLength, options);
       return [...header];
     }

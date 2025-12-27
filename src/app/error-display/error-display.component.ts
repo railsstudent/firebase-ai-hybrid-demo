@@ -10,7 +10,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       </div>
     }
   `,
-  styleUrl: './error-display.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorDisplayComponent {

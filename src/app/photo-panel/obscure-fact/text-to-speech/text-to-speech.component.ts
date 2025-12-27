@@ -1,6 +1,7 @@
 import { SpinnerIconComponent } from '@/icons/spinner-icon.component';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { GenerateSpeechMode } from '../generate-audio.util';
 
 @Component({
   selector: 'app-text-to-speech',
@@ -11,9 +12,12 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 export class TextToSpeechComponent {
     isLoadingSync = input(false);
     isLoadingStream = input(false);
+    isLoadingWebAudio = input(false);
     audioUrl = input<string | undefined>(undefined)
 
-    isLoading = computed(() => this.isLoadingSync() || this.isLoadingStream());
+    isLoading = computed(() =>
+      this.isLoadingSync() || this.isLoadingStream() || this.isLoadingWebAudio()
+    );
 
-    generateSpeech = output<{ isStream: boolean }>();
+    generateSpeech = output<{ mode: GenerateSpeechMode }>();
 }

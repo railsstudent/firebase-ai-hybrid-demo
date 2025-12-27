@@ -25,13 +25,13 @@
           <div class="flex flex-col absolute top-3 right-6">
            <button
               (click)="triggerFileSelect()" aria-label="Select a new image"
-              class="mb-2 bg-slate-900/50 text-white px-3 py-1.5 text-sm rounded-md hover:bg-slate-900/80 transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+              class="mb-2 btn-image-selector"
            >
               Change Image
            </button>
            <button
               (click)="removeFile()" aria-label="Remove the image"
-              class="bg-slate-900/50 text-white px-3 py-1.5 text-sm rounded-md hover:bg-slate-900/80 transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+              class="btn-image-selector"
            >
               Remove Image
            </button>
@@ -41,7 +41,7 @@
      <button
       (click)="generate.emit()"
       [disabled]="!previewUrl() || isLoading()"
-      class="mt-6 w-full flex items-center justify-center gap-2 bg-brand-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-500 disabled:bg-slate-600 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 disabled:scale-100"
+      class="mt-6 w-full flex items-center justify-center btn-audio"
     >
       @if (isLoading()) {
         <app-spinner-icon class="animate-spin h-5 w-5" />
