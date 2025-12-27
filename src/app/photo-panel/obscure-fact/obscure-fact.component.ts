@@ -25,25 +25,23 @@ export class ObscureFactComponent implements OnDestroy {
   isLoadingStream = signal(false);
   isLoadingWebAudio = signal(false);
 
-  audioSyncUrl = signal<string | undefined>(undefined);
-  audioBlobUrl = signal<string | undefined>(undefined);
+  audioUrl = signal<string | undefined>(undefined);
+  playbackRate = this.audioPlayerService.playbackRate;
 
   ttsError = ttsError;
-
-  resetAudio() {
-    this.audioBlobUrl.set(undefined);
-    this.audioSyncUrl.set(undefined);
-  }
 
   async generateSpeech({ mode }: { mode: GenerateSpeechMode }) {
     const fact = this.interestingFact();
     if (fact) {
-      revokeBlobURL(this.audioBlobUrl);
-      this.resetAudio();
+      revokeBlobURL(this.audioUrl);
+      this.audioUrl.set(undefined);
 
       if (mode === 'sync' || mode === 'stream') {
-        const { loadingSignal, urlSignal, speechFn } = this.constructTtsArgs(mode);
-        await generateSpeechHelper(fact, loadingSignal, urlSignal, speechFn);
+        const loadingSignal = mode === 'stream' ? this.isLoadingStream : this.isLoadingSync;
+        const speechFn = (text: string) => mode === 'stream' ?
+            this.speechService.generateAudioBlobURL(text) :
+            this.speechService.generateAudio(text);
+        await generateSpeechHelper(fact, loadingSignal, this.audioUrl, speechFn);
       } else if (mode === 'web_audio_api') {
         await streamSpeechWithWebAudio(
           fact,
@@ -53,26 +51,7 @@ export class ObscureFactComponent implements OnDestroy {
     }
   }
 
-  private constructTtsArgs(mode: GenerateSpeechMode) {
-    switch (mode) {
-      case 'stream':
-        return {
-          loadingSignal: this.isLoadingStream,
-          urlSignal: this.audioBlobUrl,
-          speechFn: (text: string) => this.speechService.generateAudioBlobURL(text)
-        }
-      case 'sync':
-        return {
-          loadingSignal: this.isLoadingSync,
-          urlSignal: this.audioSyncUrl,
-          speechFn: (text: string) => this.speechService.generateAudio(text)
-        }
-      default:
-        throw new Error(`Unknown mode: ${mode}`);
-    }
-  }
-
   ngOnDestroy(): void {
-    revokeBlobURL(this.audioBlobUrl);
+    revokeBlobURL(this.audioUrl);
   }
 }

@@ -23,7 +23,10 @@
     [disabled]="isLoading()"
     class="mt-6 flex items-center justify-center btn-audio"
   >
-    @let c3 = { isLoading: isLoadingWebAudio(), buttonText: 'Web Audio API' };
+    @let c3 = { isLoading: isLoadingWebAudio(),
+      genText: `Speak (Playback rate: ${playbackRate()})`,
+      buttonText: `Web Audio API`
+    };
     <ng-container [ngTemplateOutlet]="buttonTemplate" [ngTemplateOutletContext]="c3" />
   </button>
 </div>
@@ -35,9 +38,11 @@
     </figure>
 }
 
-<ng-template #buttonTemplate let-isLoading="isLoading" let-buttonText="buttonText">
+<ng-template #buttonTemplate
+  let-isLoading="isLoading" let-buttonText="buttonText" let-genText="genText"
+>
   @if (isLoading) {
     <app-spinner-icon class="animate-spin h-5 w-5" />
   }
-  {{ isLoading ? 'Generating Speech...' : buttonText }}
+  {{ isLoading ? genText || 'Generating Speech...' : buttonText }}
 </ng-template>

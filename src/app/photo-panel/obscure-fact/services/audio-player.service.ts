@@ -1,5 +1,5 @@
 import { SpeechService } from '@/ai/services/speech.service';
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 
 const INT16_MAX_VALUE = 32768;
 
@@ -13,6 +13,8 @@ export class AudioPlayerService implements OnDestroy  {
   private nextStartTime = 0;
   private activeSources: AudioBufferSourceNode[] = [];
 
+  playbackRate = signal(1);
+
   async playStream(text: string) {
       this.stopAll();
 
@@ -21,6 +23,7 @@ export class AudioPlayerService implements OnDestroy  {
       }
 
       this.nextStartTime = this.audioCtx.currentTime;
+      this.playbackRate.set(this.setRandomPlaybackRate());
 
       const { data, stream } = await this.speechService.generateAudioStream(text);
       for await (const audioChunk of stream) {
@@ -53,19 +56,20 @@ export class AudioPlayerService implements OnDestroy  {
     buffer.copyToChannel(float32Data, 0);
 
     const source = this.connectSource(buffer);
+    source.playbackRate.value = this.playbackRate();
 
     const playTime = Math.max(this.nextStartTime, this.audioCtx.currentTime);
-    console.log("playTime", playTime);
     source.start(playTime);
 
-    this.nextStartTime = playTime + buffer.duration;
+    const actualDuration = buffer.duration / this.playbackRate();
+    this.nextStartTime = playTime + actualDuration;
   }
 
   private normalizeSoundSamples(rawData: number[]) {
-    const uint8 = new Uint8Array(rawData);
+    let uint8 = new Uint8Array(rawData);
 
     if (uint8.byteLength % 2 !== 0) {
-      throw new Error('Odd chunk received');
+      uint8 = uint8.slice(0, uint8.byteLength - 1);
     }
 
     const int16Data = new Int16Array(uint8.buffer, uint8.byteOffset, uint8.byteLength / 2);
@@ -74,6 +78,11 @@ export class AudioPlayerService implements OnDestroy  {
       float32Data[i] = (int16Data[i] * 1.0) / INT16_MAX_VALUE;
     }
     return float32Data;
+  }
+
+  private setRandomPlaybackRate(min = 0.85, max = 1.3) {
+    const rawRate = Math.random() * (max - min) + min;
+    return Math.round(rawRate * 100) / 100;
   }
 
   private connectSource(buffer: AudioBuffer) {

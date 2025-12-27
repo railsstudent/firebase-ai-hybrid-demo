@@ -14,6 +14,7 @@ export class TextToSpeechComponent {
     isLoadingStream = input(false);
     isLoadingWebAudio = input(false);
     audioUrl = input<string | undefined>(undefined)
+    playbackRate = input.required<number>();
 
     isLoading = computed(() =>
       this.isLoadingSync() || this.isLoadingStream() || this.isLoadingWebAudio()

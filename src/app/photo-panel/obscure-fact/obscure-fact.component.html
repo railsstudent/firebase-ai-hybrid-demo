@@ -9,8 +9,9 @@
         [isLoadingSync]="isLoadingSync()"
         [isLoadingStream]="isLoadingStream()"
         [isLoadingWebAudio]="isLoadingWebAudio()"
-        [audioUrl]="audioSyncUrl() || audioBlobUrl()"
+        [audioUrl]="audioUrl()"
         (generateSpeech)="generateSpeech($event)"
+        [playbackRate]="playbackRate()"
       />
     } @else {
       <p class="text-slate-500 italic mb-2">The tag(s) does not have any interesting or obscure fact.</p>
