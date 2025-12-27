@@ -5,7 +5,6 @@ import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { connectFunctionsEmulator, Functions, getFunctions } from "firebase/functions";
 import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'firebase/remote-config';
-import { connectStorageEmulator, getStorage } from 'firebase/storage';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import config from '../../public/config.json';
 import { ConfigService } from './ai/services/config.service';
