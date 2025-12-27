@@ -3,6 +3,8 @@
     @if (interestingFact()) {
       <p class="text-indigo-400 italic mb-2 text-lg">{{ interestingFact() }}.</p>
 
+      <app-error-display [error]="error()" />
+
       <app-text-to-speech
         [isLoadingSync]="isLoadingSync()"
         [isLoadingStream]="isLoadingStream()"
