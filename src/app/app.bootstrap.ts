@@ -57,10 +57,5 @@ function connectEmulators(functions: Functions, remoteConfig: RemoteConfig) {
     const port = getValue(remoteConfig, 'functionEmulatorPort').asNumber();
     console.log('functionEmulator', `${host}:${port}`);
     connectFunctionsEmulator(functions, host, port);
-
-    const storageHost = getValue(remoteConfig, 'storageEmulatorHost').asString();
-    const storagePort = getValue(remoteConfig, 'storageEmulatorPort').asNumber();
-    console.log('functionEmulator', `${host}:${port}`);
-    connectStorageEmulator(getStorage(), storageHost, storagePort);
   }
 }
