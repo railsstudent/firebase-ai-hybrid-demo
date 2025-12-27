@@ -22,7 +22,7 @@
 @if (audioUrl(); as url) {
     <figure>
       <figcaption>Listen to the Gemini-TTS:</figcaption>
-      <audio controls [src]="url"></audio>
+      <audio controls [src]="url" [playbackRate]="'1.25'"></audio>
     </figure>
 }
 

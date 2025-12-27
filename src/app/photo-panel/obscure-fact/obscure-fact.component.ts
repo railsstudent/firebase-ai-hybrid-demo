@@ -1,6 +1,8 @@
 import { SpeechService } from '@/ai/services/speech.service';
 import { ErrorDisplayComponent } from '@/error-display/error-display.component';
 import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, signal } from '@angular/core';
+import { revokeBlobURL } from '../blob.util';
+import { generateSpeechHelper, ttsError } from './generate-audio.util';
 import { TextToSpeechComponent } from './text-to-speech/text-to-speech.component';
 
 @Component({
@@ -21,60 +23,29 @@ export class ObscureFactComponent implements OnDestroy {
   isLoadingStream = signal(false);
   audioSyncUrl = signal<string | undefined>(undefined)
   audioBlobUrl = signal<string | undefined>(undefined)
-  error = signal('');
+  ttsError = ttsError;
 
   resetAudio() {
     this.audioBlobUrl.set(undefined);
     this.audioSyncUrl.set(undefined);
   }
 
-  private revokeBlobURL() {
-    const blobUrl = this.audioBlobUrl();
-    if (blobUrl) {
-      URL.revokeObjectURL(blobUrl);
-    }
-  }
-
   async generateSpeech({ isStream }: { isStream: boolean }) {
     const fact = this.interestingFact();
     if (fact) {
-      this.revokeBlobURL()
+      revokeBlobURL(this.audioBlobUrl);
       this.resetAudio();
-      if (isStream) {
-        this.generateSpeechStream(fact);
-      } else {
-        this.generateSpeechSync(fact);
-      }
-    }
-  }
 
-  async generateSpeechSync(fact: string) {
-    try {
-      this.isLoadingSync.set(true);
-      const uri = await this.speechService.generateAudio(fact);
-      this.audioSyncUrl.set(uri);
-    } catch (e) {
-      console.error(e);
-      this.error.set('Error generating audio.');
-    } finally {
-      this.isLoadingSync.set(false);
-    }
-  }
-
-  async generateSpeechStream(fact: string) {
-    try {
-      this.isLoadingStream.set(true);
-      const uri = await this.speechService.generateAudioStream(fact);
-      this.audioBlobUrl.set(uri);
-    } catch (e) {
-      console.error(e);
-      this.error.set('Error streaming audio.');
-    } finally {
-      this.isLoadingStream.set(false);
+      const loadingSignal = isStream ? this.isLoadingStream : this.isLoadingSync;
+      const urlSignal = isStream ? this.audioBlobUrl : this.audioSyncUrl;
+      const speechFn = isStream ?
+        (text: string) => this.speechService.generateAudioStream(text) :
+        (text: string) => this.speechService.generateAudio(text);
+      await generateSpeechHelper(fact, loadingSignal, urlSignal, speechFn);
     }
   }
 
   ngOnDestroy(): void {
-    this.revokeBlobURL();
+    revokeBlobURL(this.audioBlobUrl);
   }
 }

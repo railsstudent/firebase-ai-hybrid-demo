@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, OnDestroy, output, signal } from '@angular/core';
 import { ImageAnalysisResponse } from '../ai/types/image-analysis.type';
+import { revokeBlobURL } from './blob.util';
 import { ObscureFactComponent } from './obscure-fact/obscure-fact.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';
 import { TagsDisplayComponent } from './tags-display/tags-display.component';
@@ -47,10 +48,7 @@ export class PhotoPanel implements OnDestroy {
     }
 
     // Revoke the old URL to prevent memory leaks
-    const currentUrl = this.previewUrl();
-    if (currentUrl) {
-      URL.revokeObjectURL(currentUrl);
-    }
+    revokeBlobURL(this.previewUrl);
 
     this.selectedFile.set(file);
     this.analysis.set(undefined);
@@ -58,9 +56,6 @@ export class PhotoPanel implements OnDestroy {
   }
 
   ngOnDestroy() {
-    const url = this.previewUrl();
-    if (url) {
-      URL.revokeObjectURL(url);
-    }
+    revokeBlobURL(this.previewUrl);
   }
 }
