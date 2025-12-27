@@ -31,7 +31,7 @@ export function convertToWav(rawData: string, mimeType: string) {
  * @param {String} mimeType  Mime type
  * @return {WavConversionOptions} wav conversion options
  */
-function parseMimeType(mimeType : string) {
+export function parseMimeType(mimeType : string) {
   const [fileType, ...params] = mimeType.split(";").map((s) => s.trim());
   const format = fileType.split("/")[1];
 
@@ -62,7 +62,7 @@ function parseMimeType(mimeType : string) {
  * @param {WavConversionOptions} options  Wave conversion options
  * @return {Buffer} buffer
  */
-function createWavHeader(dataLength: number, options: WavConversionOptions) {
+export function createWavHeader(dataLength: number, options: WavConversionOptions) {
   const {
     numChannels,
     sampleRate,

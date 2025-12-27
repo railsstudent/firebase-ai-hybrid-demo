@@ -1,10 +1,11 @@
 import { GenerateContentConfig, GenerateContentResponse, GoogleGenAI } from "@google/genai";
+import { CallableResponse } from "firebase-functions/https";
 import { validateVideoConfigFields } from "./audio-validation";
 import { DARTH_VADER_TONE, LIGHT_TONE } from "./constants/tone.const";
 import { KORE_VOICE_CONFIG, PUCK_VOICE_CONFIG } from "./constants/tts-config.const";
 import { AIAudio } from "./types/audio.type";
-import { convertToWav, encodeBase64String } from "./wav-conversion";
-import { CallableResponse } from "firebase-functions/https";
+import { WavConversionOptions } from './types/wav-conversion-options.type';
+import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
 
 /**
  *
@@ -39,7 +40,7 @@ export async function readFactFunction(text: string) {
 export async function readFactFunctionStream(text: string, response: CallableResponse<unknown>) {
   const variables = validateVideoConfigFields();
   if (!variables) {
-    return "";
+    return undefined;
   }
 
   const { genAIOptions, model } = variables;
@@ -90,15 +91,31 @@ ${text}`;
 
     const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
 
+    let rawDataLength = 0;
+    let options: WavConversionOptions | undefined = undefined;
     for await (const chunk of chunks) {
       const inlineData = chunk.candidates?.[0]?.content?.parts?.[0]?.inlineData;
       const rawData = inlineData?.data;
       const mimeType = inlineData?.mimeType;
 
+      if (!options && mimeType) {
+        options = parseMimeType(mimeType);
+      }
+
       if (rawData && mimeType) {
-        response.sendChunk(convertToWav(rawData, mimeType));
+        rawDataLength = rawDataLength + rawData.length;
+        const buffer = Buffer.from(rawData, "base64");
+        response.sendChunk(buffer);
       }
     }
+
+    // return the wave header array;
+    if (options && rawDataLength > 0) {
+      const header = createWavHeader(rawDataLength, options);
+      return [...header];
+    }
+
+    return undefined;
   } catch (error) {
     console.error(error);
     throw error;
