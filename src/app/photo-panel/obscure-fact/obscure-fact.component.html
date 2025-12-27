@@ -6,7 +6,7 @@
       <app-text-to-speech
         [isLoadingSync]="isLoadingSync()"
         [isLoadingStream]="isLoadingStream()"
-        [audioUrl]="audioUrl()"
+        [audioUrl]="audioSyncUrl() || audioBlobUrl()"
         (generateSpeech)="generateSpeech($event)"
       />
     } @else {

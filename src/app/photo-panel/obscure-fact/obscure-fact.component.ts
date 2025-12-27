@@ -1,5 +1,5 @@
 import { SpeechService } from '@/ai/services/speech.service';
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, signal } from '@angular/core';
 import { TextToSpeechComponent } from '../text-to-speech/text-to-speech.component';
 
 @Component({
@@ -17,16 +17,6 @@ export class ObscureFactComponent implements OnDestroy {
   isLoadingStream = signal(false);
   audioSyncUrl = signal<string | undefined>(undefined)
   audioBlobUrl = signal<string | undefined>(undefined)
-
-  audioUrl = computed(() => {
-    if (this.audioSyncUrl()) {
-      return this.audioSyncUrl();
-    } else if (this.audioBlobUrl()) {
-      return this.audioBlobUrl();
-    }
-
-    return undefined;
-  })
 
   resetAudio() {
     this.audioBlobUrl.set(undefined);
