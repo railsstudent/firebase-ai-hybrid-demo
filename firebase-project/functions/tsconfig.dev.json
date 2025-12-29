@@ -1,8 +1,6 @@
 {
-  "compilerOptions": {
-    "allowJs": true
-  },
-  "include": [
-    ".eslintrc.js"
-  ]
+    "compilerOptions": {
+        "allowJs": true
+    },
+    "include": [".eslintrc.js"]
 }

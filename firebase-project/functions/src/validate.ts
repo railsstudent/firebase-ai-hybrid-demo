@@ -8,12 +8,12 @@ import logger from "firebase-functions/logger";
  * @return {string | undefined} the validated string value or undefined if validation fails
  */
 export function validate(value: string | undefined, fieldName: string, missingKeys: string[]) {
-  const err = `${fieldName} is missing.`;
-  if (!value) {
-    logger.error(err);
-    missingKeys.push(fieldName);
-    return "";
-  }
+    const err = `${fieldName} is missing.`;
+    if (!value) {
+        logger.error(err);
+        missingKeys.push(fieldName);
+        return "";
+    }
 
-  return value;
+    return value;
 }

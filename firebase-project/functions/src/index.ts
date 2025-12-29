@@ -19,46 +19,44 @@ const cors = process.env.WHITELIST ? process.env.WHITELIST.split(",") : true;
 const whitelist = process.env.WHITELIST?.split(",") || [];
 const refererList = process.env.REFERER?.split(",") || [];
 
-export const getFirebaseConfig = onRequest( { cors },
-  (request, response) => {
+export const getFirebaseConfig = onRequest({ cors }, (request, response) => {
     if (request.method !== "GET") {
-      response.status(405).send("Method Not Allowed");
-      return;
+        response.status(405).send("Method Not Allowed");
+        return;
     }
 
     try {
-      const referer = request.header("referer");
-      const origin = request.header("origin");
-      if (!referer) {
-        response.status(401).send("Unauthorized, invalid referer.");
-        return;
-      }
+        const referer = request.header("referer");
+        const origin = request.header("origin");
+        if (!referer) {
+            response.status(401).send("Unauthorized, invalid referer.");
+            return;
+        }
 
-      if (!refererList.includes(referer)) {
-        response.status(401).send("Unauthorized, invalid referer.");
-        return;
-      }
+        if (!refererList.includes(referer)) {
+            response.status(401).send("Unauthorized, invalid referer.");
+            return;
+        }
 
-      if (!origin) {
-        response.status(401).send("Unauthorized, invalid origin.");
-        return;
-      }
+        if (!origin) {
+            response.status(401).send("Unauthorized, invalid origin.");
+            return;
+        }
 
-      if (!whitelist.includes(origin)) {
-        response.status(401).send("Unauthorized, invalid origin.");
-        return;
-      }
+        if (!whitelist.includes(origin)) {
+            response.status(401).send("Unauthorized, invalid origin.");
+            return;
+        }
 
-      const config = getFirebaseConfigFunction();
+        const config = getFirebaseConfigFunction();
 
-      response.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
-      response.json(config);
+        response.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
+        response.json(config);
     } catch (err) {
-      console.error(err);
-      response.status(401).send("Internal Server Error");
+        console.error(err);
+        response.status(401).send("Internal Server Error");
     }
-  }
-);
+});
 
 // eslint-disable-next-line  @typescript-eslint/no-require-imports
 exports.textToAudio = require("./text-to-audio");

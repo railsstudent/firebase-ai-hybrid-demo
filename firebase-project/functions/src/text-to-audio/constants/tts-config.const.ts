@@ -1,27 +1,23 @@
 import { GenerateContentConfig } from "@google/genai";
 
 export const KORE_VOICE_CONFIG: GenerateContentConfig = {
-  responseModalities: [
-    "audio",
-  ],
-  speechConfig: {
-    voiceConfig: {
-      prebuiltVoiceConfig: {
-        voiceName: "Kore",
-      },
+    responseModalities: ["audio"],
+    speechConfig: {
+        voiceConfig: {
+            prebuiltVoiceConfig: {
+                voiceName: "Kore",
+            },
+        },
     },
-  },
 };
 
 export const PUCK_VOICE_CONFIG: GenerateContentConfig = {
-  responseModalities: [
-    "audio",
-  ],
-  speechConfig: {
-    voiceConfig: {
-      prebuiltVoiceConfig: {
-        voiceName: "Puck",
-      },
+    responseModalities: ["audio"],
+    speechConfig: {
+        voiceConfig: {
+            prebuiltVoiceConfig: {
+                voiceName: "Puck",
+            },
+        },
     },
-  },
 };
