@@ -1,6 +1,6 @@
 import { createTtsURL } from '@/photo-panel/blob.util';
 import { inject, Injectable } from '@angular/core';
-import { httpsCallable } from 'firebase/functions';
+import { Functions, httpsCallable } from 'firebase/functions';
 import { SerializedBuffer } from '../types/serialized-buffer.type';
 import { ConfigService } from './config.service';
 
@@ -10,29 +10,28 @@ import { ConfigService } from './config.service';
 export class SpeechService  {
     private configService = inject(ConfigService);
 
-    async generateAudio(text: string) {
+    private get functions(): Functions {
       if (!this.configService.functions) {
-        throw new Error('Functions not initialized');
+        throw new Error('Firebase Functions has not been initialized.');
       }
+      return this.configService.functions;
+    }
 
-      const functions = this.configService.functions;
-      const readFactFunction = httpsCallable<string, string>(functions, 'textToAudio-readFact');
+    async generateAudio(text: string) {
+      const readFactFunction = httpsCallable<string, string>(
+        this.functions, 'textToAudio-readFact'
+      );
 
       const { data: audioUri } = await readFactFunction(text);
       return audioUri;
     }
 
     async generateAudioStream(text: string) {
-      if (!this.configService.functions) {
-        throw new Error('Functions not initialized');
-      }
-
-      const functions = this.configService.functions;
-      const readFactFunction = httpsCallable<string, number[] | undefined, SerializedBuffer>(
-        functions, 'textToAudio-readFact'
+      const readFactStreamFunction = httpsCallable<string, number[] | undefined, SerializedBuffer>(
+        this.functions, 'textToAudio-readFact'
       );
 
-      return readFactFunction.stream(text);
+      return readFactStreamFunction.stream(text);
     }
 
     async generateAudioBlobURL(text: string) {
