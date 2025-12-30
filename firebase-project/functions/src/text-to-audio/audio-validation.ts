@@ -4,7 +4,7 @@ import { validate } from "../validate";
  *
  * @return {object} an object containing validated environment variables or undefined if validation fails
  */
-export function validateVideoConfigFields() {
+export function validateAudioConfigFields() {
     process.loadEnvFile();
 
     const env = process.env;

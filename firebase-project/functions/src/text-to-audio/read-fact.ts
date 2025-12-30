@@ -1,6 +1,6 @@
 import { GenerateContentConfig, GenerateContentResponse, GoogleGenAI } from "@google/genai";
-import { CallableResponse } from "firebase-functions/https";
-import { validateVideoConfigFields } from "./audio-validation";
+import { CallableResponse, HttpsError } from "firebase-functions/https";
+import { validateAudioConfigFields } from "./audio-validation";
 import { DARTH_VADER_TONE, LIGHT_TONE } from "./constants/tone.const";
 import { KORE_VOICE_CONFIG, PUCK_VOICE_CONFIG } from "./constants/tts-config.const";
 import { AIAudio } from "./types/audio.type";
@@ -9,25 +9,33 @@ import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conver
 
 /**
  *
+ * @param {any} callback A callback function that returns a URL, wav header or undefined
+ * @return {Promise<string | number[] | undefined>} the result of the callback function
+ */
+async function withAIAudio(callback: (ai: GoogleGenAI, model: string) => Promise<string | number[] | undefined>) {
+    try {
+        const variables = validateAudioConfigFields();
+        if (!variables) {
+            return "";
+        }
+
+        const { genAIOptions, model } = variables;
+        const ai = new GoogleGenAI(genAIOptions);
+        return await callback(ai, model);
+    } catch (e) {
+        console.error(e);
+        throw new HttpsError("internal", "Internal server error", { originalError: (e as Error).message });
+    }
+}
+
+/**
+ *
  * @param {String} text      text
  * @return {Promise<string>} the GCS uri of a video
  * @throws {Error} If configuration is invalid or video generation fails.
  */
 export async function readFactFunction(text: string) {
-    const variables = validateVideoConfigFields();
-    if (!variables) {
-        return "";
-    }
-
-    const { genAIOptions, model } = variables;
-
-    try {
-        const ai = new GoogleGenAI(genAIOptions);
-        return await generateAudio({ ai, model }, text);
-    } catch (error) {
-        console.error("Error generating audio:", error);
-        throw new Error("Error generating audio.");
-    }
+    return withAIAudio((ai, model) => generateAudio({ ai, model }, text));
 }
 
 /**
@@ -38,20 +46,7 @@ export async function readFactFunction(text: string) {
  * @throws {Error} If configuration is invalid or video generation fails.
  */
 export async function readFactFunctionStream(text: string, response: CallableResponse<unknown>) {
-    const variables = validateVideoConfigFields();
-    if (!variables) {
-        return undefined;
-    }
-
-    const { genAIOptions, model } = variables;
-
-    try {
-        const ai = new GoogleGenAI(genAIOptions);
-        return await generateAudioStream({ ai, model }, text, response);
-    } catch (error) {
-        console.error("Error generating audio:", error);
-        throw new Error("Error generating audio.");
-    }
+    return withAIAudio((ai, model) => generateAudioStream({ ai, model }, text, response));
 }
 
 /**
@@ -79,8 +74,13 @@ async function generateAudio(aiTTS: AIAudio, text: string) {
  * @param {AIAudio} aiTTS ai audio info
  * @param {String} text    Text to be converted to audio
  * @param {CallableResponse} response  CallableResponse object
+ * @return {Promise<number[] | undefined>}  wav header or undefined
  */
-async function generateAudioStream(aiTTS: AIAudio, text: string, response: CallableResponse<unknown>) {
+async function generateAudioStream(
+    aiTTS: AIAudio,
+    text: string,
+    response: CallableResponse<unknown>,
+): Promise<number[] | undefined> {
     try {
         const { ai, model } = aiTTS;
         const contents = `${LIGHT_TONE.trim()} ${text.trim()}`;
@@ -99,8 +99,8 @@ async function generateAudioStream(aiTTS: AIAudio, text: string, response: Calla
             }
 
             if (rawData && mimeType) {
-                rawDataLength = rawDataLength + rawData.length;
                 const buffer = Buffer.from(rawData, "base64");
+                rawDataLength = rawDataLength + buffer.length;
                 response.sendChunk(buffer);
             }
         }
