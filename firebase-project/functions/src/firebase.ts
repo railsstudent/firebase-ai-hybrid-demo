@@ -43,8 +43,6 @@ function validateFirebaseConfigFields(env: NodeJS.ProcessEnv) {
 export const getFirebaseConfigFunction = () => {
     logger.info("getFirebaseConfig called");
 
-    process.loadEnvFile();
-
     const variables = validateFirebaseConfigFields(process.env);
     if (!variables) {
         return undefined;

@@ -5,8 +5,6 @@ import { validate } from "../validate";
  * @return {object} an object containing validated environment variables or undefined if validation fails
  */
 export function validateAudioConfigFields() {
-    process.loadEnvFile();
-
     const env = process.env;
     const vertexai = (env.GOOGLE_GENAI_USE_VERTEXAI || "false") === "true";
 
