@@ -36,10 +36,10 @@ export class AudioPlayerService implements OnDestroy  {
   }
 
   private stopAll() {
-    this.activeSources.forEach(source => {
+    this.activeSources.forEach(sourceNode => {
       try {
-        source.stop();
-        source.disconnect();
+        sourceNode.stop();
+        sourceNode.disconnect();
       } catch (e) {
         console.log(e);
       }
@@ -55,11 +55,11 @@ export class AudioPlayerService implements OnDestroy  {
     const buffer = this.audioCtx.createBuffer(1, float32Data.length, 24000);
     buffer.copyToChannel(float32Data, 0);
 
-    const source = this.connectSource(buffer);
-    source.playbackRate.value = this.playbackRate();
+    const sourceNode = this.connectSource(buffer);
+    sourceNode.playbackRate.value = this.playbackRate();
 
     const playTime = Math.max(this.nextStartTime, this.audioCtx.currentTime);
-    source.start(playTime);
+    sourceNode.start(playTime);
 
     const actualDuration = buffer.duration / this.playbackRate();
     this.nextStartTime = playTime + actualDuration;
@@ -86,21 +86,21 @@ export class AudioPlayerService implements OnDestroy  {
   }
 
   private connectSource(buffer: AudioBuffer) {
-    const source = this.audioCtx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(this.audioCtx.destination);
+    const sourceNode = this.audioCtx.createBufferSource();
+    sourceNode.buffer = buffer;
+    sourceNode.connect(this.audioCtx.destination);
 
-    this.activeSources.push(source);
+    this.activeSources.push(sourceNode);
 
     // Cleanup: Remove from array when this specific chunk finishes playing
-    source.onended = () => {
-      const index = this.activeSources.indexOf(source);
+    sourceNode.onended = () => {
+      const index = this.activeSources.indexOf(sourceNode);
       if (index >= 0) {
         this.activeSources.splice(index, 1);
       }
     };
 
-    return source;
+    return sourceNode;
   }
 
   ngOnDestroy(): void {

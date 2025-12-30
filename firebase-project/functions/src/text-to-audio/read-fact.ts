@@ -105,7 +105,7 @@ async function generateAudioStream(aiTTS: AIAudio, text: string, response: Calla
             }
         }
 
-        // return the wave header array;
+        // return the wav header array;
         if (options && rawDataLength > 0) {
             console.log("rawDataLength", rawDataLength);
             const header = createWavHeader(rawDataLength, options);
