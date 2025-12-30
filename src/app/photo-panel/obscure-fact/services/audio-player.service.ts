@@ -1,6 +1,7 @@
 import { SpeechService } from '@/ai/services/speech.service';
 import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 
+// The maximum value of a 16-bit signed integer, used for normalizing audio samples.
 const INT16_MAX_VALUE = 32768;
 
 @Injectable({
@@ -25,14 +26,18 @@ export class AudioPlayerService implements OnDestroy  {
       this.nextStartTime = this.audioCtx.currentTime;
       this.playbackRate.set(this.setRandomPlaybackRate());
 
-      const { data, stream } = await this.speechService.generateAudioStream(text);
-      for await (const audioChunk of stream) {
-        if (audioChunk && audioChunk.data) {
-          this.processChunk(audioChunk.data);
+      try {
+        const { stream } = await this.speechService.generateAudioStream(text);
+        for await (const audioChunk of stream) {
+          if (audioChunk?.data) {
+            this.processChunk(audioChunk.data);
+          }
         }
+      } catch (error) {
+        console.error('Failed to play audio stream:', error);
+        // Optionally, reset state or notify the user
+        this.stopAll();
       }
-
-      await data;
   }
 
   private stopAll() {
@@ -41,7 +46,8 @@ export class AudioPlayerService implements OnDestroy  {
         sourceNode.stop();
         sourceNode.disconnect();
       } catch (e) {
-        console.log(e);
+        // It's common for stop() to be called on a node that has already finished.
+        // We can safely ignore these "InvalidStateError" exceptions.
       }
     });
 
@@ -66,15 +72,17 @@ export class AudioPlayerService implements OnDestroy  {
   }
 
   private normalizeSoundSamples(rawData: number[]) {
-    let uint8 = new Uint8Array(rawData);
+    const rawBuffer = new Uint8Array(rawData).buffer;
 
-    if (uint8.byteLength % 2 !== 0) {
-      uint8 = uint8.slice(0, uint8.byteLength - 1);
+    // Ensure the buffer has an even number of bytes to create a valid Int16Array view.
+    const byteLength = rawBuffer.byteLength % 2 === 0 ? rawBuffer.byteLength : rawBuffer.byteLength - 1;
+    if (byteLength === 0) {
+      return new Float32Array(0);
     }
 
-    const int16Data = new Int16Array(uint8.buffer, uint8.byteOffset, uint8.byteLength / 2);
+    const int16Data = new Int16Array(rawBuffer, 0, byteLength / 2);
     const float32Data = new Float32Array(int16Data.length);
-    for (let i = 0; i < int16Data.length; i=i+1) {
+    for (let i = 0; i < int16Data.length; i++) {
       float32Data[i] = (int16Data[i] * 1.0) / INT16_MAX_VALUE;
     }
     return float32Data;
