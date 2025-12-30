@@ -16,8 +16,8 @@ process.loadEnvFile();
 
 setGlobalOptions({ maxInstances: 2, region: process.env.GOOGLE_FUNCTION_LOCATION || "us-central1" });
 
-const cors = process.env.WHITELIST ? process.env.WHITELIST.split(",") : true;
 const whitelist = process.env.WHITELIST?.split(",") || [];
+const cors = whitelist.length > 0 ? whitelist : true;
 const refererList = process.env.REFERER?.split(",") || [];
 
 /**
