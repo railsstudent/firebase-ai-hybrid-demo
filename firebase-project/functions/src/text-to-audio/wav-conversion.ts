@@ -18,7 +18,7 @@ export function encodeBase64String({ rawData, mimeType }: RawAudioData) {
  * @param {String} mimeType mime type of the audio data
  * @return {Buffer} buffer
  */
-export function convertToWav(rawData: string, mimeType: string) {
+export function convertToWav(rawData: string, mimeType: string): Buffer<ArrayBuffer> {
     const options = parseMimeType(mimeType);
     const wavHeader = createWavHeader(rawData.length, options);
     const buffer = Buffer.from(rawData, "base64");
