@@ -2,9 +2,9 @@ import { GenerateContentConfig, GenerateContentResponse, GoogleGenAI } from "@go
 import { CallableResponse, HttpsError } from "firebase-functions/https";
 import { validateAudioConfigFields } from "./audio-validation";
 import { DARTH_VADER_TONE, LIGHT_TONE } from "./constants/tone.const";
-import { KORE_VOICE_CONFIG, PUCK_VOICE_CONFIG } from "./constants/tts-config.const";
 import { AIAudio } from "./types/audio.type";
 import { WavConversionOptions } from "./types/wav-conversion-options.type";
+import { createVoiceConfig } from './voice-config';
 import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
 
 /**
@@ -60,7 +60,8 @@ async function generateAudio(aiTTS: AIAudio, text: string) {
         const { ai, model } = aiTTS;
         const contents = `${DARTH_VADER_TONE.trim()} ${text.trim()}`;
 
-        const response = await ai.models.generateContent(createAudioParams(model, contents, KORE_VOICE_CONFIG));
+        const voiceConfig = createVoiceConfig();
+        const response = await ai.models.generateContent(createAudioParams(model, contents, voiceConfig));
 
         return getBase64DataUrl(response);
     } catch (error) {
@@ -85,7 +86,8 @@ async function generateAudioStream(
         const { ai, model } = aiTTS;
         const contents = `${LIGHT_TONE.trim()} ${text.trim()}`;
 
-        const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
+        const voiceConfig = createVoiceConfig("Puck");
+        const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, voiceConfig));
 
         let rawDataLength = 0;
         let options: WavConversionOptions | undefined = undefined;
