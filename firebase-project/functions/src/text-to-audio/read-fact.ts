@@ -114,7 +114,6 @@ async function generateAudioStream(
 
         // return the wav header array;
         if (options && rawDataLength > 0) {
-            console.log("rawDataLength", rawDataLength);
             const header = createWavHeader(rawDataLength, options);
             return [...header];
         }
