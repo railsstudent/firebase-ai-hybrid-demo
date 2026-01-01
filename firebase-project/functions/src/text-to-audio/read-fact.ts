@@ -97,7 +97,7 @@ async function generateAudioStream(
 
         const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
 
-        let rawDataLength = 0;
+        let byteLength = 0;
         let options: WavConversionOptions | undefined = undefined;
         for await (const chunk of chunks) {
             const { rawData, mimeType } = extractInlineAudioData(chunk);
@@ -107,14 +107,14 @@ async function generateAudioStream(
 
             if (rawData && mimeType) {
                 const buffer = Buffer.from(rawData, "base64");
-                rawDataLength = rawDataLength + buffer.length;
+                byteLength = byteLength + buffer.length;
                 response.sendChunk(buffer);
             }
         }
 
         // return the wav header array;
-        if (options && rawDataLength > 0) {
-            const header = createWavHeader(rawDataLength, options);
+        if (options && byteLength > 0) {
+            const header = createWavHeader(byteLength, options);
             return [...header];
         }
 

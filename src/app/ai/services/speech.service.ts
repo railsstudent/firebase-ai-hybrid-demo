@@ -1,4 +1,4 @@
-import { createTtsURL } from '@/photo-panel/blob.util';
+import { constructBlobURL } from '@/photo-panel/blob.util';
 import { inject, Injectable } from '@angular/core';
 import { Functions, httpsCallable } from 'firebase/functions';
 import { SerializedBuffer } from '../types/serialized-buffer.type';
@@ -49,6 +49,6 @@ export class SpeechService  {
         audioParts.unshift(new Uint8Array(wavHeader));
       }
 
-      return createTtsURL(audioParts);
+      return constructBlobURL(audioParts);
     }
 }

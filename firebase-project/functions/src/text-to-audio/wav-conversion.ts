@@ -29,9 +29,9 @@ export function convertToWav(rawData: string, mimeType: string): Buffer<ArrayBuf
 /**
  *
  * @param {String} mimeType  Mime type
- * @return {WavConversionOptions} wav conversion options
+ * @return {WavConversionOptions} The parsed WAV conversion options.
  */
-export function parseMimeType(mimeType: string) {
+export function parseMimeType(mimeType: string): WavConversionOptions {
     const [fileType, ...params] = mimeType.split(";").map((s) => s.trim());
     const format = fileType.split("/")[1];
 
@@ -53,7 +53,31 @@ export function parseMimeType(mimeType: string) {
         }
     }
 
-    return options as WavConversionOptions;
+    if (!isWavConversionOptions(options)) {
+        throw new Error(
+            `Invalid or incomplete mimeType: "${mimeType}". ` +
+                "Could not determine all required WAV options (sampleRate, bitsPerSample).",
+        );
+    }
+
+    return options;
+}
+
+/**
+ *
+ * @param {WavConversionOptions} options The object to check.
+ * @return {any} True if the object is a valid WavConversionOptions.
+ */
+function isWavConversionOptions(options: Partial<WavConversionOptions>): options is WavConversionOptions {
+    // A valid WavConversionOptions object must have all properties as valid numbers.
+    return (
+        typeof options.numChannels === "number" &&
+        !isNaN(options.numChannels) &&
+        typeof options.sampleRate === "number" &&
+        !isNaN(options.sampleRate) &&
+        typeof options.bitsPerSample === "number" &&
+        !isNaN(options.bitsPerSample)
+    );
 }
 
 /**

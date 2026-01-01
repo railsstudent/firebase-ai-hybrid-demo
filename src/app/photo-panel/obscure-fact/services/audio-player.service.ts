@@ -8,7 +8,7 @@ const INT16_MAX_VALUE = 32768;
   providedIn: 'root'
 })
 export class AudioPlayerService implements OnDestroy  {
-  private audioCtx = new AudioContext({ sampleRate: 24000 });
+  private audioCtx = new AudioContext();
   private speechService = inject(SpeechService);
 
   private nextStartTime = 0;

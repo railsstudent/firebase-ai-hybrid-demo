@@ -18,6 +18,6 @@ export function revokeBlobURL(dataUrl: Signal<string | undefined>) {
   }
 }
 
-export function createTtsURL(parts: BlobPart[]) {
+export function constructBlobURL(parts: BlobPart[]) {
   return URL.createObjectURL(new Blob(parts, { type: 'audio/wav' }));
 }
