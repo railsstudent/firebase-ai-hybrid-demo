@@ -1,3 +1,4 @@
+import { HttpsError } from "firebase-functions/v2/https";
 import { validate } from "../validate";
 
 /**
@@ -14,7 +15,7 @@ export function validateAudioConfigFields() {
     const project = validate(env.GOOGLE_CLOUD_QUOTA_PROJECT, "Google Cloud Project", missingKeys);
 
     if (missingKeys.length > 0) {
-        throw new Error(`Missing environment variables: ${missingKeys.join(", ")}`);
+        throw new HttpsError("failed-precondition", `Missing environment variables: ${missingKeys.join(", ")}`);
     }
 
     return {

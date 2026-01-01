@@ -1,4 +1,5 @@
 // Copied from AI Studio
+import { HttpsError } from "firebase-functions/v2/https";
 import { RawAudioData, WavConversionOptions } from "./types/wav-conversion-options.type";
 
 /**
@@ -54,7 +55,8 @@ export function parseMimeType(mimeType: string): WavConversionOptions {
     }
 
     if (!isWavConversionOptions(options)) {
-        throw new Error(
+        throw new HttpsError(
+            "invalid-argument",
             `Invalid or incomplete mimeType: "${mimeType}". ` +
                 "Could not determine all required WAV options (sampleRate, bitsPerSample).",
         );
