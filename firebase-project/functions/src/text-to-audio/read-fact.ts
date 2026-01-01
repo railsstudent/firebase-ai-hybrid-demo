@@ -7,6 +7,9 @@ import { WavConversionOptions } from "./types/wav-conversion-options.type";
 import { createVoiceConfig } from './voice-config';
 import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
 
+const KORE_VOICE_CONFIG = createVoiceConfig();
+const PUCK_VOICE_CONFIG = createVoiceConfig("Puck");
+
 /**
  * A wrapper function to initialize the GoogleGenAI client and handle configuration validation and errors.
  *
@@ -65,8 +68,7 @@ async function generateAudio(aiTTS: AIAudio, text: string) {
         const { ai, model } = aiTTS;
         const contents = `${DARTH_VADER_TONE.trim()} ${text.trim()}`;
 
-        const voiceConfig = createVoiceConfig();
-        const response = await ai.models.generateContent(createAudioParams(model, contents, voiceConfig));
+        const response = await ai.models.generateContent(createAudioParams(model, contents, KORE_VOICE_CONFIG));
 
         return getBase64DataUrl(response);
     } catch (error) {
@@ -91,8 +93,7 @@ async function generateAudioStream(
         const { ai, model } = aiTTS;
         const contents = `${LIGHT_TONE.trim()} ${text.trim()}`;
 
-        const voiceConfig = createVoiceConfig("Puck");
-        const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, voiceConfig));
+        const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
 
         let rawDataLength = 0;
         let options: WavConversionOptions | undefined = undefined;
