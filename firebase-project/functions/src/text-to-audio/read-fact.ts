@@ -8,6 +8,7 @@ import { createVoiceConfig } from './voice-config';
 import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
 
 /**
+ * A wrapper function to initialize the GoogleGenAI client and handle configuration validation and errors.
  *
  * @param {any} callback A callback function that returns a URL, wav header or undefined
  * @return {Promise<string | number[] | undefined>} the result of the callback function
@@ -24,7 +25,11 @@ async function withAIAudio(callback: (ai: GoogleGenAI, model: string) => Promise
         return await callback(ai, model);
     } catch (e) {
         console.error(e);
-        throw new HttpsError("internal", "Internal server error", { originalError: (e as Error).message });
+        // Re-throw HttpsError or wrap other errors.
+        if (e instanceof HttpsError) {
+            throw e;
+        }
+        throw new HttpsError("internal", "An internal error occurred while setting up the AI client.", { originalError: (e as Error).message });
     }
 }
 
@@ -42,7 +47,7 @@ export async function readFactFunction(text: string) {
  *
  * @param {String} text      text
  * @param {CallableResponse} response CallableResponse object
- * @return {Promise<string>} the GCS uri of a video
+ * @return {Promise<number[] | undefined>} The WAV header as a number array, or undefined if no audio was generated.
  * @throws {Error} If configuration is invalid or video generation fails.
  */
 export async function readFactFunctionStream(text: string, response: CallableResponse<unknown>) {
