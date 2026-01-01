@@ -4,7 +4,7 @@ import { validateAudioConfigFields } from "./audio-validation";
 import { DARTH_VADER_TONE, LIGHT_TONE } from "./constants/tone.const";
 import { AIAudio } from "./types/audio.type";
 import { WavConversionOptions } from "./types/wav-conversion-options.type";
-import { createVoiceConfig } from './voice-config';
+import { createVoiceConfig } from "./voice-config";
 import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
 
 const KORE_VOICE_CONFIG = createVoiceConfig();
@@ -32,7 +32,9 @@ async function withAIAudio(callback: (ai: GoogleGenAI, model: string) => Promise
         if (e instanceof HttpsError) {
             throw e;
         }
-        throw new HttpsError("internal", "An internal error occurred while setting up the AI client.", { originalError: (e as Error).message });
+        throw new HttpsError("internal", "An internal error occurred while setting up the AI client.", {
+            originalError: (e as Error).message,
+        });
     }
 }
 
@@ -98,10 +100,7 @@ async function generateAudioStream(
         let rawDataLength = 0;
         let options: WavConversionOptions | undefined = undefined;
         for await (const chunk of chunks) {
-            const inlineData = chunk.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-            const rawData = inlineData?.data;
-            const mimeType = inlineData?.mimeType;
-
+            const { rawData, mimeType } = extractInlineAudioData(chunk);
             if (!options && mimeType) {
                 options = parseMimeType(mimeType);
             }
@@ -155,13 +154,27 @@ function createAudioParams(model: string, contents: string, config?: GenerateCon
  * @return {string} data url
  */
 function getBase64DataUrl(response: GenerateContentResponse) {
-    const inlineData = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-    const rawData = inlineData?.data;
-    const mimeType = inlineData?.mimeType;
+    const { rawData, mimeType } = extractInlineAudioData(response);
 
     if (!rawData || !mimeType) {
         throw new Error("Audio generation failed: No audio data received.");
     }
 
     return encodeBase64String({ rawData, mimeType });
+}
+
+/**
+ * Extracts the inline audio data and mime type from a `GenerateContentResponse`.
+ *
+ * @param {GenerateContentResponse} response The response object from the generative AI model.
+ * @return {object} An object containing the base64 raw data and its mime type.
+ */
+function extractInlineAudioData(response: GenerateContentResponse): {
+    rawData: string | undefined;
+    mimeType: string | undefined;
+} {
+    // Use destructuring and the nullish coalescing operator for a concise and safe extraction.
+    const { data: rawData, mimeType } = response.candidates?.[0]?.content?.parts?.[0]?.inlineData ?? {};
+
+    return { rawData, mimeType };
 }
