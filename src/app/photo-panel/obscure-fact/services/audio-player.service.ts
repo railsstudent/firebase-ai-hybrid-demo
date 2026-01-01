@@ -140,6 +140,5 @@ export class AudioPlayerService implements OnDestroy  {
 
   ngOnDestroy(): void {
     this.stopAll();
-    this.audioCtx?.close();
   }
 }
