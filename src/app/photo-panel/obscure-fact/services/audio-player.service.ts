@@ -8,7 +8,7 @@ const INT16_MAX_VALUE = 32768;
   providedIn: 'root'
 })
 export class AudioPlayerService implements OnDestroy  {
-  private audioCtx = new AudioContext();
+  private audioCtx: AudioContext | undefined = undefined;
   private speechService = inject(SpeechService);
 
   private nextStartTime = 0;
@@ -19,18 +19,20 @@ export class AudioPlayerService implements OnDestroy  {
   async playStream(text: string) {
       this.stopAll();
 
-      if (this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
-      }
-
-      this.nextStartTime = this.audioCtx.currentTime;
       this.playbackRate.set(this.setRandomPlaybackRate());
 
       try {
         const { stream } = await this.speechService.generateAudioStream(text);
         for await (const audioChunk of stream) {
-          if (audioChunk?.data) {
-            this.processChunk(audioChunk.data);
+          if (audioChunk.type === 'metadata') {
+            this.initializeAudioContext(audioChunk.payload.sampleRate);
+          } else if (audioChunk.type === 'data') {
+            if (!this.audioCtx) {
+              console.warn("Audio data received before metadata. Skipping chunk.");
+              continue;
+            }
+            this.processChunk(audioChunk.payload.buffer.data);
+
           }
         }
       } catch (error) {
@@ -53,12 +55,19 @@ export class AudioPlayerService implements OnDestroy  {
 
     this.activeSources = [];
     this.nextStartTime = 0;
+    if (this.audioCtx) {
+      this.audioCtx?.close();
+      this.audioCtx = undefined;
+    }
   }
 
   private processChunk(rawData: number[]) {
     const float32Data = this.normalizeSoundSamples(rawData);
+    if (float32Data.length === 0 || !this.audioCtx) {
+      return;
+    }
 
-    const buffer = this.audioCtx.createBuffer(1, float32Data.length, 24000);
+    const buffer = this.audioCtx.createBuffer(1, float32Data.length, this.audioCtx.sampleRate);
     buffer.copyToChannel(float32Data, 0);
 
     const sourceNode = this.connectSource(buffer);
@@ -94,6 +103,10 @@ export class AudioPlayerService implements OnDestroy  {
   }
 
   private connectSource(buffer: AudioBuffer) {
+    if (!this.audioCtx) {
+      throw new Error("Audio context is not initialized.");
+    }
+
     const sourceNode = this.audioCtx.createBufferSource();
     sourceNode.buffer = buffer;
     sourceNode.connect(this.audioCtx.destination);
@@ -111,7 +124,22 @@ export class AudioPlayerService implements OnDestroy  {
     return sourceNode;
   }
 
+  private initializeAudioContext(sampleRate: number) {
+    // Ensure any old context is closed before creating a new one.
+    if (this.audioCtx) {
+      this.audioCtx.close();
+    }
+
+    this.audioCtx = new AudioContext({ sampleRate });
+    if (this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
+    }
+
+    this.nextStartTime = this.audioCtx.currentTime;
+  }
+
   ngOnDestroy(): void {
     this.stopAll();
+    this.audioCtx?.close();
   }
 }

@@ -103,12 +103,23 @@ async function generateAudioStream(
             const { rawData, mimeType } = extractInlineAudioData(chunk);
             if (!options && mimeType) {
                 options = parseMimeType(mimeType);
+                response.sendChunk({
+                    type: "metadata",
+                    payload: {
+                        sampleRate: options.sampleRate,
+                    },
+                });
             }
 
             if (rawData && mimeType) {
                 const buffer = Buffer.from(rawData, "base64");
                 byteLength = byteLength + buffer.length;
-                response.sendChunk(buffer);
+                response.sendChunk({
+                    type: "data",
+                    payload: {
+                        buffer,
+                    },
+                });
             }
         }
 

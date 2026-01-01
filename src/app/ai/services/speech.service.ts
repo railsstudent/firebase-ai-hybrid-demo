@@ -1,7 +1,7 @@
 import { constructBlobURL } from '@/photo-panel/blob.util';
 import { inject, Injectable } from '@angular/core';
 import { Functions, httpsCallable } from 'firebase/functions';
-import { SerializedBuffer } from '../types/serialized-buffer.type';
+import { StreamMessage } from '../types/stream-message.type';
 import { ConfigService } from './config.service';
 
 @Injectable({
@@ -27,7 +27,7 @@ export class SpeechService  {
     }
 
     async generateAudioStream(text: string) {
-      const readFactStreamFunction = httpsCallable<string, number[] | undefined, SerializedBuffer>(
+      const readFactStreamFunction = httpsCallable<string, number[] | undefined, StreamMessage>(
         this.functions, 'textToAudio-readFact'
       );
 
@@ -39,8 +39,8 @@ export class SpeechService  {
 
       const audioParts = [];
       for await (const audioChunk of stream) {
-        if (audioChunk && audioChunk.data) {
-          audioParts.push(new Uint8Array(audioChunk.data));
+        if (audioChunk && audioChunk.type === 'data') {
+          audioParts.push(new Uint8Array(audioChunk.payload.buffer.data));
         }
       }
 
