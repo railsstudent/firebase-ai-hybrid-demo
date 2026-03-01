@@ -7,13 +7,6 @@
       "description": "Function emulator host name",
       "valueType": "STRING"
     },
-    "thinkingBudget": {
-      "defaultValue": {
-        "value": "512"
-      },
-      "description": "Thinking budget of Nano Banana Pro",
-      "valueType": "NUMBER"
-    },
     "functionEmulatorPort": {
       "defaultValue": {
         "value": "5001"
@@ -21,18 +14,18 @@
       "description": "Function emulator port number",
       "valueType": "NUMBER"
     },
-    "includeThoughts": {
-      "defaultValue": {
-        "value": "true"
-      },
-      "description": "Whether or notNano Banana Pro generates thinking summaries",
-      "valueType": "BOOLEAN"
-    },
     "vertexAILocation": {
       "defaultValue": {
         "value": "global"
       },
       "description": "Location of Firebase AI Logic VertexAI Backend ",
+      "valueType": "STRING"
+    },
+    "thinkingLevel": {
+      "defaultValue": {
+        "value": "HIGH"
+      },
+      "description": "Thinking level of the Gemini Model",
       "valueType": "STRING"
     },
     "functionRegion": {
@@ -44,15 +37,15 @@
     },
     "geminiModelName": {
       "defaultValue": {
-        "value": "gemini-3-flash-preview"
+        "value": "gemini-3.1-pro-preview"
       },
       "description": "Germini Model Name",
       "valueType": "STRING"
     }
   },
   "version": {
-    "versionNumber": "4",
-    "updateTime": "2025-12-27T11:22:36.663908Z",
+    "versionNumber": "6",
+    "updateTime": "2026-03-01T10:43:51.469373Z",
     "updateUser": {
       "email": "cleung334@gmail.com"
     },

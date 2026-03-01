@@ -1,5 +1,5 @@
 import { inject, makeEnvironmentProviders } from '@angular/core';
-import { getAI, getGenerativeModel, VertexAIBackend } from 'firebase/ai';
+import { getAI, getGenerativeModel, ThinkingLevel, VertexAIBackend } from 'firebase/ai';
 import { FirebaseApp } from "firebase/app";
 import { getValue, RemoteConfig } from 'firebase/remote-config';
 import { AI_MODEL } from '../constants/firebase.constant';
@@ -9,8 +9,8 @@ import { ConfigService } from '../services/config.service';
 function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConfig) {
     const model = getValue(remoteConfig, 'geminiModelName').asString();
     const vertexAILocation = getValue(remoteConfig, 'vertexAILocation'). asString();
-    const includeThoughts = getValue(remoteConfig, 'includeThoughts').asBoolean();
-    const thinkingBudget = getValue(remoteConfig, 'thinkingBudget').asNumber();
+    const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString();
+    const thinkingLevel = ThinkingLevel[rawThinkingLevel as keyof typeof ThinkingLevel];
 
     const ai = getAI(firebaseApp, { backend: new VertexAIBackend(vertexAILocation) });
 
@@ -20,8 +20,7 @@ function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConf
           responseMimeType: 'application/json',
           responseSchema: ImageAnalysisSchema,
           thinkingConfig: {
-            includeThoughts,
-            thinkingBudget,
+            thinkingLevel
           }
         },
         tools: [{

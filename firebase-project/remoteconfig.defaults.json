@@ -1,9 +1,8 @@
 {
   "functionEmulatorHost": "localhost",
-  "thinkingBudget": "512",
   "functionEmulatorPort": "5001",
-  "includeThoughts": "true",
   "vertexAILocation": "global",
+  "thinkingLevel": "HIGH",
   "functionRegion": "asia-east2",
-  "geminiModelName": "gemini-3-flash-preview"
+  "geminiModelName": "gemini-3.1-pro-preview"
 }
