@@ -4,5 +4,5 @@
   "vertexAILocation": "global",
   "thinkingLevel": "HIGH",
   "functionRegion": "asia-east2",
-  "geminiModelName": "gemini-3.1-pro-preview"
+  "geminiModelName": "gemini-3.1-flash-lite-preview"
 }

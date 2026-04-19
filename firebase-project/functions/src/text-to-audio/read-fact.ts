@@ -1,6 +1,6 @@
 import { GenerateContentConfig, GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import { CallableResponse, HttpsError } from "firebase-functions/https";
-import { validateAudioConfigFields } from "./audio-validation";
+import { AUDIO_CONFIG } from "./audio-validation";
 import { DARTH_VADER_TONE, LIGHT_TONE } from "./constants/tone.const";
 import { AIAudio } from "./types/audio.type";
 import { WavConversionOptions } from "./types/wav-conversion-options.type";
@@ -18,7 +18,7 @@ const PUCK_VOICE_CONFIG = createVoiceConfig("Puck");
  */
 async function withAIAudio(callback: (ai: GoogleGenAI, model: string) => Promise<string | number[] | undefined>) {
     try {
-        const variables = validateAudioConfigFields();
+        const variables = AUDIO_CONFIG;
         if (!variables) {
             return "";
         }
