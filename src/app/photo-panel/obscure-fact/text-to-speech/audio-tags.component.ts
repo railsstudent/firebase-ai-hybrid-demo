@@ -1,21 +1,16 @@
-import { SpinnerIconComponent } from '@/icons/spinner-icon.component';
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { GenerateSpeechMode } from '../generate-audio.util';
-import { AudioTagsComponent } from './audio-tags.component';
 
 @Component({
-  selector: 'app-text-to-speech',
-  templateUrl: './text-to-speech.component.html',
-  imports: [SpinnerIconComponent, NgTemplateOutlet, AudioTagsComponent],
+  selector: 'app-audio-tags',
+  template: `<div>Audio Tags Component works!</div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextToSpeechComponent {
+export class AudioTagsComponent {
     isLoadingSync = input(false);
     isLoadingStream = input(false);
     isLoadingWebAudio = input(false);
     audioUrl = input<string | undefined>(undefined)
-    playbackRate = input.required<number>();
 
     isLoading = computed(() =>
       this.isLoadingSync() || this.isLoadingStream() || this.isLoadingWebAudio()
