@@ -1,4 +1,5 @@
 // Copied from AI Studio
+import { logger } from 'firebase-functions';
 import { HttpsError } from "firebase-functions/v2/https";
 import { RawAudioData, WavConversionOptions } from "./types/wav-conversion-options.type";
 
@@ -20,6 +21,7 @@ export function encodeBase64String({ rawData, mimeType }: RawAudioData) {
  * @return {Buffer} buffer
  */
 export function convertToWav(rawData: string, mimeType: string): Buffer<ArrayBuffer> {
+    logger.debug("Converting raw audio data to WAV format...", { mimeType });
     const options = parseMimeType(mimeType);
     const wavHeader = createWavHeader(rawData.length, options);
     const buffer = Buffer.from(rawData, "base64");
@@ -36,12 +38,19 @@ export function parseMimeType(mimeType: string): WavConversionOptions {
     const [fileType, ...params] = mimeType.split(";").map((s) => s.trim());
     const format = fileType.split("/")[1];
 
+    logger.debug("File type for WAV conversion:", fileType);
+    logger.debug("Format for WAV conversion:", format);
+    logger.debug("Params for WAV conversion:", params);
+
     const options: Partial<WavConversionOptions> = {
         numChannels: 1,
     };
 
-    if (format && format.startsWith("L")) {
+    if (format && format.toLowerCase().startsWith("l")) {
         const bits = parseInt(format.slice(1), 10);
+
+        logger.debug("Parsing bits for WAV conversion:", { bits });
+
         if (!isNaN(bits)) {
             options.bitsPerSample = bits;
         }
@@ -53,6 +62,8 @@ export function parseMimeType(mimeType: string): WavConversionOptions {
             options.sampleRate = parseInt(value, 10);
         }
     }
+
+    logger.log("Options for WAV conversion:", options);
 
     if (!isWavConversionOptions(options)) {
         throw new HttpsError(
@@ -71,6 +82,8 @@ export function parseMimeType(mimeType: string): WavConversionOptions {
  * @return {any} True if the object is a valid WavConversionOptions.
  */
 function isWavConversionOptions(options: Partial<WavConversionOptions>): options is WavConversionOptions {
+    logger.debug("Validating WavConversionOptions:", options);
+
     // A valid WavConversionOptions object must have all properties as valid numbers.
     return (
         typeof options.numChannels === "number" &&
