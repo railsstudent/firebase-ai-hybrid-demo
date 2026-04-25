@@ -1,7 +1,6 @@
 import { GenerateContentConfig, GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import { CallableResponse, HttpsError } from "firebase-functions/https";
 import { AUDIO_CONFIG } from "./audio-validation";
-import { DARTH_VADER_TONE, LIGHT_TONE } from "./constants/tone.const";
 import { AIAudio } from "./types/audio.type";
 import { WavConversionOptions } from "./types/wav-conversion-options.type";
 import { createVoiceConfig } from "./voice-config";
@@ -50,29 +49,25 @@ export async function readFactFunction(prompt: string) {
 
 /**
  *
- * @param {String} text      text
+ * @param {String} prompt      Prompt to generate audio from
  * @param {CallableResponse} response CallableResponse object
  * @return {Promise<number[] | undefined>} The WAV header as a number array, or undefined if no audio was generated.
  * @throws {Error} If configuration is invalid or video generation fails.
  */
-export async function readFactFunctionStream(text: string, response: CallableResponse<unknown>) {
-    return withAIAudio((ai, model) => generateAudioStream({ ai, model }, text, response));
+export async function readFactFunctionStream(prompt: string, response: CallableResponse<unknown>) {
+    return withAIAudio((ai, model) => generateAudioStream({ ai, model }, prompt, response));
 }
 
 /**
  *
  * @param {AIAudio} aiTTS ai audio info
- * @param {String} text    Text to be converted to audio
+ * @param {String} prompt    Prompt to generate audio from
  * @return {String} audio data url
  */
-async function generateAudio(aiTTS: AIAudio, text: string) {
+async function generateAudio(aiTTS: AIAudio, prompt: string) {
     try {
         const { ai, model } = aiTTS;
-
-        const profile = `# AUDIO PROFILE: Darth Vader\n## "${DARTH_VADER_TONE.trim()}"`;
-        const contents = `${profile}\n\n${text.trim()}`;
-
-        const response = await ai.models.generateContent(createAudioParams(model, contents, KORE_VOICE_CONFIG));
+        const response = await ai.models.generateContent(createAudioParams(model, prompt, KORE_VOICE_CONFIG));
         return getBase64DataUrl(response);
     } catch (error) {
         console.error(error);
@@ -89,16 +84,13 @@ async function generateAudio(aiTTS: AIAudio, text: string) {
  */
 async function generateAudioStream(
     aiTTS: AIAudio,
-    text: string,
+    prompt: string,
     response: CallableResponse<unknown>,
 ): Promise<number[] | undefined> {
     try {
         const { ai, model } = aiTTS;
 
-        const profile = `# AUDIO PROFILE: Energetic Host\n## "${LIGHT_TONE.trim()}"`;
-        const contents = `${profile}\n\n${text.trim()}`;
-
-        const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
+        const chunks = await ai.models.generateContentStream(createAudioParams(model, prompt, PUCK_VOICE_CONFIG));
         let byteLength = 0;
         let options: WavConversionOptions | undefined = undefined;
         for await (const chunk of chunks) {
