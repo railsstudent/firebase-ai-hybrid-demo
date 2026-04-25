@@ -28,4 +28,3 @@ export const FIREBASE_APP_CONFIG = (() => {
         recaptchaSiteKey,
     };
 })();
-

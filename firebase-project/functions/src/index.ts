@@ -1,4 +1,4 @@
-import './env';
+import "./env";
 
 /**
  * Import function triggers from their respective submodules:

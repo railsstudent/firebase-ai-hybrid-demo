@@ -40,12 +40,12 @@ async function withAIAudio(callback: (ai: GoogleGenAI, model: string) => Promise
 
 /**
  *
- * @param {String} text      text
+ * @param {String} prompt      Prompt to generate audio from
  * @return {Promise<string>} the GCS uri of a video
  * @throws {Error} If configuration is invalid or video generation fails.
  */
-export async function readFactFunction(text: string) {
-    return withAIAudio((ai, model) => generateAudio({ ai, model }, text));
+export async function readFactFunction(prompt: string) {
+    return withAIAudio((ai, model) => generateAudio({ ai, model }, prompt));
 }
 
 /**
@@ -68,10 +68,11 @@ export async function readFactFunctionStream(text: string, response: CallableRes
 async function generateAudio(aiTTS: AIAudio, text: string) {
     try {
         const { ai, model } = aiTTS;
-        const contents = `${DARTH_VADER_TONE.trim()} ${text.trim()}`;
+
+        const profile = `# AUDIO PROFILE: Darth Vader\n## "${DARTH_VADER_TONE.trim()}"`;
+        const contents = `${profile}\n\n${text.trim()}`;
 
         const response = await ai.models.generateContent(createAudioParams(model, contents, KORE_VOICE_CONFIG));
-
         return getBase64DataUrl(response);
     } catch (error) {
         console.error(error);
@@ -93,10 +94,11 @@ async function generateAudioStream(
 ): Promise<number[] | undefined> {
     try {
         const { ai, model } = aiTTS;
-        const contents = `${LIGHT_TONE.trim()} ${text.trim()}`;
+
+        const profile = `# AUDIO PROFILE: Energetic Host\n## "${LIGHT_TONE.trim()}"`;
+        const contents = `${profile}\n\n${text.trim()}`;
 
         const chunks = await ai.models.generateContentStream(createAudioParams(model, contents, PUCK_VOICE_CONFIG));
-
         let byteLength = 0;
         let options: WavConversionOptions | undefined = undefined;
         for await (const chunk of chunks) {

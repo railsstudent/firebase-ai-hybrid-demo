@@ -1,5 +1,5 @@
 // Copied from AI Studio
-import { logger } from 'firebase-functions';
+import { logger } from "firebase-functions";
 import { HttpsError } from "firebase-functions/v2/https";
 import { RawAudioData, WavConversionOptions } from "./types/wav-conversion-options.type";
 
