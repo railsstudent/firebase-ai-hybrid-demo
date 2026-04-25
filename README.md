@@ -1,59 +1,111 @@
-# FirebaseAiHybridDemo
+# Firebase AI Hybrid Demo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.3.
+This project demonstrates a hybrid approach to integrating AI features into an Angular application using Firebase. It utilizes client-side AI processing for image analysis and server-side processing via Firebase Cloud Functions for text-to-audio streaming.
 
-## Development server
+## Technical Stack
 
-To start a local development server, run:
+* **Frontend:** Angular v21, Tailwind CSS v4
+* **Backend:** Firebase Cloud Functions (Node.js)
+* **AI SDKs:**
+  * Client: `firebase/ai` (Gemini API for Web)
+  * Server: `@google/genai` (Google Gen AI SDK for Node.js)
+* **Infrastructure:** Firebase Hosting, Firebase Local Emulator Suite
 
-```bash
-ng serve
+## Architecture
+
+The following diagram illustrates the data flow between the Angular client, Firebase services, and the Gemini models:
+
+```mermaid
+sequenceDiagram
+    participant Client as Angular App
+    participant FBA as Firebase/AI SDK
+    participant Func as Firebase Cloud Functions
+    participant GenAI as Google GenAI SDK
+
+    Note over Client,FBA: Client-side Image Analysis
+    Client->>FBA: Send Image + Prompt (generateAltText)
+    FBA-->>Client: Return Image Analysis (Alt Text, Tags, Fact)
+
+    Note over Client,GenAI: Server-side Text-to-Audio
+    Client->>Func: Call readFact/stream with Fact Text
+    Func->>GenAI: Request Text-to-Speech (gemini-2.5-flash-tts)
+    GenAI-->>Func: Stream Audio Chunks
+    Func-->>Client: Stream Audio Chunks
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Local Development Setup
 
-## Code scaffolding
+To run this project locally, you need to set up both the Firebase Emulators and the Angular development server.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
 
-```bash
-ng generate component component-name
-```
+* Node.js (v24 recommended, as specified in functions, which supports `process.loadEnvFile()`)
+* [Firebase CLI](https://firebase.google.com/docs/cli) installed globally (`npm install -g firebase-tools`)
+* Log in to Firebase using the CLI:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+    ```bash
+    firebase login
+    ```
 
-```bash
-ng generate --help
-```
+### 1. Firebase Setup
 
-## Building
+First, configure and start the Firebase Cloud Functions emulator.
 
-To build the project run:
+1. **Create a Firebase Project:** If you don't already have a project, go to the [Firebase Console](https://console.firebase.google.com/), create a new project, and **enable Vertex AI** for that project.
+2. Navigate to the functions directory:
 
-```bash
-ng build
-```
+    ```bash
+    cd firebase-project/functions
+    ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+3. Install dependencies:
 
-## Running unit tests
+    ```bash
+    npm install
+    ```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+4. Create your environment file by copying the example:
 
-```bash
-ng test
-```
+    ```bash
+    cp .env.example .env
+    ```
 
-## Running end-to-end tests
+5. Open the newly created `.env` file and update the configuration with your project details using placeholders:
 
-For end-to-end (e2e) testing, run:
+    ```env
+    APP_API_KEY="<YOUR_FIREBASE_API_KEY>"
+    APP_MESSAGING_SENDER_ID="<YOUR_SENDER_ID>"
+    APP_ID="<YOUR_APP_ID>"
+    RECAPTCHA_ENTERPRISE_SITE_KEY="<YOUR_RECAPTCHA_KEY>"
+    # Keep the other defaults provided in .env.example
+    ```
 
-```bash
-ng e2e
-```
+6. Start the Firebase Local Emulator Suite:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+    ```bash
+    npm run serve
+    ```
 
-## Additional Resources
+### 2. Angular Setup
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+In a new terminal window, start the Angular development server.
+
+1. Navigate to the root project directory:
+
+    ```bash
+    cd /path/to/firebase-ai-hybrid-demo
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Start the application:
+
+    ```bash
+    npm run start
+    ```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`.
