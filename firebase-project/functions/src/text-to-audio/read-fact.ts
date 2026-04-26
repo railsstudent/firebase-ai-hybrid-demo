@@ -1,7 +1,7 @@
 import { GenerateContentConfig, GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import { CallableResponse, HttpsError } from "firebase-functions/https";
 import { AUDIO_CONFIG } from "./audio-validation";
-import { AIAudio } from "./types/audio.type";
+import { AIAudio } from "./types/ai-model.type";
 import { WavConversionOptions } from "./types/wav-conversion-options.type";
 import { createVoiceConfig } from "./voice-config";
 import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
