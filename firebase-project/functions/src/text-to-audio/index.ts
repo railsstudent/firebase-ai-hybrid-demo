@@ -21,5 +21,5 @@ export const readFact = onCall(options, (request, response) => {
     const audioProfile = isStreaming ? AUDIO_PROFILES["LIGHT"] : AUDIO_PROFILES["DARTH_VADER"];
     const prompt = buildAudioPrompt(data, audioProfile);
 
-    return isStreaming ? readFactFunctionStream(prompt, response) : readFactFunction(prompt);
+    return isStreaming ? readFactFunctionStream(prompt, data.voiceOption, response) : readFactFunction(prompt, data.voiceOption);
 });

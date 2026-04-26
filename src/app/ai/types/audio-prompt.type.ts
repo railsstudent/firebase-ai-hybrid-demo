@@ -3,4 +3,5 @@ export type AudioPrompt = {
   emotion: string;
   pace: string;
   transcript: string;
+  voiceOption: string;
 }

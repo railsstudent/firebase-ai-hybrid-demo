@@ -6,9 +6,6 @@ import { WavConversionOptions } from "./types/wav-conversion-options.type";
 import { createVoiceConfig } from "./voice-config";
 import { createWavHeader, encodeBase64String, parseMimeType } from "./wav-conversion";
 
-const KORE_VOICE_CONFIG = createVoiceConfig();
-const PUCK_VOICE_CONFIG = createVoiceConfig("Puck");
-
 /**
  * A wrapper function to initialize the GoogleGenAI client and handle configuration validation and errors.
  *
@@ -40,34 +37,38 @@ async function withAIAudio(callback: (ai: GoogleGenAI, model: string) => Promise
 /**
  *
  * @param {String} prompt      Prompt to generate audio from
+ * @param {String} voiceName voice option for audio generation
  * @return {Promise<string>} the GCS uri of a video
  * @throws {Error} If configuration is invalid or video generation fails.
  */
-export async function readFactFunction(prompt: string) {
-    return withAIAudio((ai, model) => generateAudio({ ai, model }, prompt));
+export async function readFactFunction(prompt: string, voiceName: string) {
+    return withAIAudio((ai, model) => generateAudio({ ai, model }, prompt, voiceName));
 }
 
 /**
  *
  * @param {String} prompt      Prompt to generate audio from
+ * @param {String} voiceName voice option for audio generation
  * @param {CallableResponse} response CallableResponse object
  * @return {Promise<number[] | undefined>} The WAV header as a number array, or undefined if no audio was generated.
  * @throws {Error} If configuration is invalid or video generation fails.
  */
-export async function readFactFunctionStream(prompt: string, response: CallableResponse<unknown>) {
-    return withAIAudio((ai, model) => generateAudioStream({ ai, model }, prompt, response));
+export async function readFactFunctionStream(prompt: string, voiceName: string, response: CallableResponse<unknown>) {
+    return withAIAudio((ai, model) => generateAudioStream({ ai, model }, prompt, voiceName, response));
 }
 
 /**
  *
  * @param {AIAudio} aiTTS ai audio info
  * @param {String} prompt    Prompt to generate audio from
+ * @param {String} voiceName    voice option for audio generation
  * @return {String} audio data url
  */
-async function generateAudio(aiTTS: AIAudio, prompt: string) {
+async function generateAudio(aiTTS: AIAudio, prompt: string, voiceName: string) {
     try {
         const { ai, model } = aiTTS;
-        const response = await ai.models.generateContent(createAudioParams(model, prompt, KORE_VOICE_CONFIG));
+        const voiceOption = createVoiceConfig(voiceName);
+        const response = await ai.models.generateContent(createAudioParams(model, prompt, voiceOption));
         return getBase64DataUrl(response);
     } catch (error) {
         console.error(error);
@@ -79,18 +80,20 @@ async function generateAudio(aiTTS: AIAudio, prompt: string) {
  *
  * @param {AIAudio} aiTTS ai audio info
  * @param {String} text    Text to be converted to audio
+ * @param {String} voiceName    voice option for audio generation
  * @param {CallableResponse} response  CallableResponse object
  * @return {Promise<number[] | undefined>}  wav header or undefined
  */
 async function generateAudioStream(
     aiTTS: AIAudio,
     prompt: string,
+    voiceName: string,
     response: CallableResponse<unknown>,
 ): Promise<number[] | undefined> {
     try {
         const { ai, model } = aiTTS;
-
-        const chunks = await ai.models.generateContentStream(createAudioParams(model, prompt, PUCK_VOICE_CONFIG));
+        const voiceOption = createVoiceConfig(voiceName);
+        const chunks = await ai.models.generateContentStream(createAudioParams(model, prompt, voiceOption));
         let byteLength = 0;
         let options: WavConversionOptions | undefined = undefined;
         for await (const chunk of chunks) {
