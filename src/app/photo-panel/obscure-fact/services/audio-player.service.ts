@@ -1,4 +1,5 @@
 import { SpeechService } from '@/ai/services/speech.service';
+import { AudioPrompt } from '@/ai/types/audio-prompt.type';
 import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 
 // The maximum value of a 16-bit signed integer, used for normalizing audio samples.
@@ -16,13 +17,13 @@ export class AudioPlayerService implements OnDestroy  {
 
   playbackRate = signal(1);
 
-  async playStream(text: string) {
+  async playStream(audioPrompt: AudioPrompt) {
       this.stopAll();
 
       this.playbackRate.set(this.setRandomPlaybackRate());
 
       try {
-        const { stream } = await this.speechService.generateAudioStream(text);
+        const { stream } = await this.speechService.generateAudioStream(audioPrompt);
         for await (const audioChunk of stream) {
           if (audioChunk.type === 'metadata') {
             this.initializeAudioContext(audioChunk.payload.sampleRate);

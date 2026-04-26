@@ -1,10 +1,12 @@
 import { SpeechService } from '@/ai/services/speech.service';
+import { AudioPrompt } from '@/ai/types/audio-prompt.type';
 import { ErrorDisplayComponent } from '@/error-display/error-display.component';
 import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, signal } from '@angular/core';
 import { revokeBlobURL } from '../blob.util';
-import { generateSpeechHelper, GenerateSpeechMode, streamSpeechWithWebAudio, ttsError } from './generate-audio.util';
+import { generateSpeechHelper, streamSpeechWithWebAudio, ttsError } from './generate-audio.util';
 import { AudioPlayerService } from './services/audio-player.service';
 import { TextToSpeechComponent } from './text-to-speech/text-to-speech.component';
+import { ModeWithAudioTags } from './text-to-speech/types/mode-audio-tags.type';
 
 @Component({
   selector: 'app-obscure-fact',
@@ -30,23 +32,29 @@ export class ObscureFactComponent implements OnDestroy {
 
   ttsError = ttsError;
 
-  async generateSpeech({ mode }: { mode: GenerateSpeechMode }) {
+  async generateSpeech({ mode, audioTags }: ModeWithAudioTags) {
     const fact = this.interestingFact();
+
     if (fact) {
       revokeBlobURL(this.audioUrl);
       this.audioUrl.set(undefined);
 
+      const audioPrompt = {
+          ...audioTags,
+          transcript: fact,
+      };
       if (mode === 'sync' || mode === 'stream') {
         const loadingSignal = mode === 'stream' ? this.isLoadingStream : this.isLoadingSync;
-        const speechFn = (text: string) => mode === 'stream' ?
-            this.speechService.generateAudioBlobURL(text) :
-            this.speechService.generateAudio(text);
-        await generateSpeechHelper(fact, loadingSignal, this.audioUrl, speechFn);
+        const speechFn = (audioPrompt: AudioPrompt) => mode === 'stream' ?
+            this.speechService.generateAudioBlobURL(audioPrompt) :
+            this.speechService.generateAudio(audioPrompt);
+
+        await generateSpeechHelper(audioPrompt, loadingSignal, this.audioUrl, speechFn);
       } else if (mode === 'web_audio_api') {
         await streamSpeechWithWebAudio(
-          fact,
+          audioPrompt,
           this.isLoadingWebAudio,
-          (text: string) => this.audioPlayerService.playStream(text));
+          (audioPrompt: AudioPrompt) => this.audioPlayerService.playStream(audioPrompt));
       }
     }
   }

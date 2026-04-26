@@ -1,8 +1,8 @@
 import { SpinnerIconComponent } from '@/icons/spinner-icon.component';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { GenerateSpeechMode } from '../generate-audio.util';
 import { AudioTagsComponent } from './audio-tags.component';
+import { ModeWithAudioTags } from './types/mode-audio-tags.type';
 
 @Component({
   selector: 'app-text-to-speech',
@@ -21,5 +21,5 @@ export class TextToSpeechComponent {
       this.isLoadingSync() || this.isLoadingStream() || this.isLoadingWebAudio()
     );
 
-    generateSpeech = output<{ mode: GenerateSpeechMode }>();
+    generateSpeech = output<ModeWithAudioTags>();
 }

@@ -1,8 +1,8 @@
 <div>
-  <app-audio-tags />
+  <app-audio-tags #audioTags />
   <div class="flex justify-evenly">
     <button
-        (click)="generateSpeech.emit({ mode: 'sync' })"
+        (click)="generateSpeech.emit({ mode: 'sync', audioTags: audioTags.audioPromptModel() })"
         aria-label="Generate speech"
         [disabled]="isLoading()"
         class="mt-6 flex items-center justify-center btn-audio"
@@ -11,7 +11,7 @@
       <ng-container [ngTemplateOutlet]="buttonTemplate" [ngTemplateOutletContext]="c" />
     </button>
     <button
-      (click)="generateSpeech.emit({ mode: 'stream' })"
+      (click)="generateSpeech.emit({ mode: 'stream', audioTags: audioTags.audioPromptModel() })"
       aria-label="Stream speech"
       [disabled]="isLoading()"
       class="mt-6 flex items-center justify-center btn-audio"
@@ -20,7 +20,7 @@
       <ng-container [ngTemplateOutlet]="buttonTemplate" [ngTemplateOutletContext]="c2" />
     </button>
     <button
-      (click)="generateSpeech.emit({ mode: 'web_audio_api' })"
+      (click)="generateSpeech.emit({ mode: 'web_audio_api', audioTags: audioTags.audioPromptModel() })"
       aria-label="Stream speech"
       [disabled]="isLoading()"
       class="mt-6 flex items-center justify-center btn-audio"
