@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
-import { AudioPromptData } from './types/audio-prompt-data.type';
-import { VOICE_OPTIONS } from './constants/voice-options.const';
+import { form, FormField } from '@angular/forms/signals';
+import { VOICE_OPTIONS } from './text-to-speech/constants/voice-options.const';
+import { AudioPromptData } from './text-to-speech/types/audio-prompt-data.type';
 
 @Component({
   selector: 'app-audio-tags',
   imports: [FormField],
-  template: `<div>Audio Tags Component works!</div>
+  template: `
     <div style="color: white; display: flex; flex-direction: column; gap: 12px; max-width: 400px">
       <label for="scene">Scene:</label>
       <textarea id="scene" [formField]="audioPromptForm.scene" placeholder="Scene description"></textarea>
@@ -14,18 +14,14 @@ import { VOICE_OPTIONS } from './constants/voice-options.const';
       <input type="text" id="emotion" [formField]="audioPromptForm.emotion" placeholder="Emotion. E.g., serious, panicked, trembling" />
       <label for="pace">Pace:</label>
       <input type="text" id="pace" [formField]="audioPromptForm.pace" placeholder="Pace. E.g, very fast, fast, slow, very slow" />
-      <select [formField]="audioPromptForm.voiceOption">
+      <label for="voiceOption">Voice Option:</label>
+      <select id="voiceOption" [formField]="audioPromptForm.voiceOption">
         <option value="" disabled selected>Select a voice option</option>
         @for (option of sortedVoiceOptions(); track option.name) {
           <option [value]="option.name">{{ option.label }}</option>
         }
       </select>
     </div>
-    <pre>
-    Scene: {{ audioPromptModel().scene  }},
-    Emotion: {{ audioPromptModel().emotion   }},
-    Pace: {{ audioPromptModel().pace  }}
-    </pre>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

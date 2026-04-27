@@ -16,7 +16,13 @@ export function buildAudioPrompt(data: AudioPrompt, audioProfile: AudioProfile):
     const trimmedPace = pace ? `[${pace}]` : '';
     const emotion = (data.emotion || '').trim();
     const trimmedEmotion = emotion ? `[${emotion}]` : '';
-    const transcriptWithAttributes = `## TRANSCRIPT:\n"""${trimmedEmotion}${trimmedPace}\n${trimmedTranscript}"""`;
+
+    // add attributes to the beginning of each sentence in the transcript
+    const sentences = trimmedTranscript.split('.').filter((s): s is string => !!s)
+      .map(sentence => `${trimmedEmotion}${trimmedPace} ${sentence.trim()}.`)
+      .join('');
+
+    const transcriptWithAttributes = `## TRANSCRIPT:\n"""${sentences}"""`;
     const profile = `# AUDIO PROFILE: ${audioProfile.name}\n## "${audioProfile.role}"`;
 
     // append transcript
