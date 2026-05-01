@@ -1,5 +1,5 @@
 import logger from 'firebase-functions/logger';
-import { SCENE_DICTIONARY } from './constants/scens.const';
+import { SCENE_DICTIONARY } from './constants/scenes.const';
 import { AudioProfile } from './types/audio-profile.type';
 import { AudioPrompt } from './types/audio-prompt.type';
 
