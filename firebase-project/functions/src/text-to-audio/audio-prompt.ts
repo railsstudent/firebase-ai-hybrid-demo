@@ -9,29 +9,32 @@ export function buildAudioPrompt(data: AudioPrompt, audioProfile: AudioProfile):
     logger.debug("Selected scene index:", randomIndex);
     const selectedScene = SCENE_DICTIONARY[randomIndex];
 
-    const audioTags = `${makeTag(data.emotion)}${makeTag(data.pace)}`;
-
-    // add attributes to the beginning of each sentence in the transcript
-    const parts = data.transcript.split(/(?<!\b(?:Mr|Mrs|Ms|Dr|St|i\.e|e\.g))([.!?\n\r]+[”"’']*\s*)/);
-    const transcript = parts
-        .map((text, i, arr) => {
-            if (i % 2 !== 0) {
-              return ''; // Skip delimiters, they are appended to the text blocks
-            }
-            const delimiter = arr[i + 1] || '';
-            return text.trim() ? `${audioTags}${text.trim()}${delimiter}` : delimiter;
-        })
-        .join('');
-
-    const transcriptWithAttributes = `## TRANSCRIPT:\n"""${transcript}"""`;
-    const profile = `# AUDIO PROFILE: ${audioProfile.name}\n## "${audioProfile.role}"`;
-
-    // append transcript
+    const transcript = insertAudioTagsToTranscript(data);
     const trimmedScene = (data.scene || '').trim() || selectedScene;
-    const prompt = `${profile}\n\n## Scene:\n${trimmedScene}\n\n${transcriptWithAttributes}`;
+
+    const prompt = `## Scene:
+${trimmedScene}
+
+## Transcript:
+${transcript}`;
+
     logger.debug("Constructed audio prompt:", prompt);
 
     return prompt;
+}
+
+function insertAudioTagsToTranscript({ transcript, pace, emotion }: AudioPrompt) {
+  const audioTags = `${makeTag(emotion)}${makeTag(pace)}`;
+  const parts = transcript.split(/(?<!\b(?:Mr|Mrs|Ms|Dr|St|i\.e|e\.g))([.!?\n\r]+[”"’']*\s*)/);
+  return parts
+    .map((text, i, arr) => {
+      if (i % 2 !== 0) {
+        return ''; // Skip delimiters, they are appended to the text blocks
+      }
+      const delimiter = arr[i + 1] || '';
+      return text.trim() ? `${audioTags}${text.trim()}${delimiter}` : delimiter;
+    })
+    .join('');
 }
 
 function makeTag(value: string) {

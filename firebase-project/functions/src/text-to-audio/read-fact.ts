@@ -136,21 +136,23 @@ async function generateAudioStream(
 /**
  *
  * @param {String} model      AI model name
- * @param {String} contents   contents
+ * @param {String} prompt   prompt
  * @param {GenerateContentConfig} config  GenerateContentConfig
  * @return {GenerateContentParameters}  a GenerateContentParameters object
  */
-function createAudioParams(model: string, contents: string, config?: GenerateContentConfig) {
+function createAudioParams(model: string, prompt: string, config?: GenerateContentConfig) {
     return {
         model,
-        contents: {
-            role: "user",
-            parts: [
-                {
-                    text: contents,
-                },
-            ],
-        },
+        contents: [
+            {
+                role: "user",
+                parts: [
+                    {
+                        text: prompt,
+                    },
+                ],
+            },
+        ],
         config,
     };
 }
