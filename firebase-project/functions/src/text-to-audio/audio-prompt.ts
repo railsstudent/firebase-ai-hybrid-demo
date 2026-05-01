@@ -12,11 +12,18 @@ export function buildAudioPrompt(data: AudioPrompt, audioProfile: AudioProfile):
     const audioTags = `${makeTag(data.emotion)}${makeTag(data.pace)}`;
 
     // add attributes to the beginning of each sentence in the transcript
-    const sentences = data.transcript.split('.').filter((s): s is string => !!s)
-      .map(sentence => `${audioTags}${sentence.trim()}.`)
-      .join('');
+    const parts = data.transcript.split(/(?<!\b(?:Mr|Mrs|Ms|Dr|St|i\.e|e\.g))([.!?\n\r]+[”"’']*\s*)/);
+    const transcript = parts
+        .map((text, i, arr) => {
+            if (i % 2 !== 0) {
+              return ''; // Skip delimiters, they are appended to the text blocks
+            }
+            const delimiter = arr[i + 1] || '';
+            return text.trim() ? `${audioTags}${text.trim()}${delimiter}` : delimiter;
+        })
+        .join('');
 
-    const transcriptWithAttributes = `## TRANSCRIPT:\n"""${sentences}"""`;
+    const transcriptWithAttributes = `## TRANSCRIPT:\n"""${transcript}"""`;
     const profile = `# AUDIO PROFILE: ${audioProfile.name}\n## "${audioProfile.role}"`;
 
     // append transcript

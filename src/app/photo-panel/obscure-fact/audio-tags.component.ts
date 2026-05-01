@@ -73,7 +73,7 @@ export class AudioTagsComponent {
       scene: 'A news anchor reading the news in a busy newsroom',
       emotion: 'professional, slightly serious',
       pace: 'moderate, clear enunciation',
-      voiceOption: 'kore'
+      voiceOption: 'Kore'
     });
     audioPromptForm = form(this.#audioPromptModel);
 
