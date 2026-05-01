@@ -1,8 +1,7 @@
 import { logger } from "firebase-functions";
 import { onCall } from "firebase-functions/v2/https";
 import { cors } from "../auth";
-import { buildAudioPrompt } from './audio-prompt';
-import { AUDIO_PROFILES } from './constants/tone.const';
+import { buildAudioPrompt } from "./audio-prompt";
 import { readFactFunction, readFactFunctionStream } from "./read-fact";
 
 const options = {
@@ -18,8 +17,9 @@ export const readFact = onCall(options, (request, response) => {
     logger.debug("Accepts streaming:", acceptsStreaming);
 
     const isStreaming = acceptsStreaming && !!response;
-    const audioProfile = isStreaming ? AUDIO_PROFILES["LIGHT"] : AUDIO_PROFILES["DARTH_VADER"];
-    const prompt = buildAudioPrompt(data, audioProfile);
+    const prompt = buildAudioPrompt(data);
 
-    return isStreaming ? readFactFunctionStream(prompt, data.voiceOption, response) : readFactFunction(prompt, data.voiceOption);
+    return isStreaming
+        ? readFactFunctionStream(prompt, data.voiceOption, response)
+        : readFactFunction(prompt, data.voiceOption);
 });

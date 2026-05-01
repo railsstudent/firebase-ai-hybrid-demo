@@ -79,7 +79,7 @@ async function generateAudio(aiTTS: AIAudio, prompt: string, voiceName: string) 
 /**
  *
  * @param {AIAudio} aiTTS ai audio info
- * @param {String} text    Text to be converted to audio
+ * @param {String} prompt    Text to be converted to audio
  * @param {String} voiceName    voice option for audio generation
  * @param {CallableResponse} response  CallableResponse object
  * @return {Promise<number[] | undefined>}  wav header or undefined

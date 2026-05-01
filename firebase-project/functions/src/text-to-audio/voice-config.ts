@@ -1,5 +1,5 @@
 import { GenerateContentConfig } from "@google/genai";
-import { logger } from 'firebase-functions';
+import { logger } from "firebase-functions";
 
 /**
  *
