@@ -2,7 +2,7 @@ import { logger } from "firebase-functions";
 import { onCall } from "firebase-functions/v2/https";
 import { cors } from "../auth";
 import { buildAudioPrompt } from "./audio-prompt";
-import { readFactFunction, readFactFunctionStream } from "./read-fact";
+import { readFactFunction, readFactStreamFunction } from "./read-fact";
 
 const options = {
     cors,
@@ -20,6 +20,6 @@ export const readFact = onCall(options, (request, response) => {
     const prompt = buildAudioPrompt(data);
 
     return isStreaming
-        ? readFactFunctionStream(prompt, data.voiceOption, response)
+        ? readFactStreamFunction(prompt, data.voiceOption, response)
         : readFactFunction(prompt, data.voiceOption);
 });

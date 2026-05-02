@@ -53,7 +53,7 @@ export async function readFactFunction(prompt: string, voiceName: string) {
  * @return {Promise<number[] | undefined>} The WAV header as a number array, or undefined if no audio was generated.
  * @throws {Error} If configuration is invalid or video generation fails.
  */
-export async function readFactFunctionStream(prompt: string, voiceName: string, response: CallableResponse<unknown>) {
+export async function readFactStreamFunction(prompt: string, voiceName: string, response: CallableResponse<unknown>) {
     return withAIAudio((ai, model) => generateAudioStream({ ai, model }, prompt, voiceName, response));
 }
 
