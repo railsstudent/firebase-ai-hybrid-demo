@@ -27,10 +27,12 @@ function sanitizeTranscript(text: string): string {
     return (
         (text || "")
             .trim()
-            // 1. Neutralize potential markdown header injections (e.g. '##')
+            // 1. Replace actual newlines with literal '\n' characters
+            .replace(/\r?\n/g, "\\n")
+            // 2. Neutralize potential markdown header injections (e.g. '##')
             // that could trick the parser into ending the transcript block.
             .replace(/^#+/gm, "")
-            // 2. Ensure we don't have triple quotes inside that would break our delimiter
+            // 3. Ensure we don't have triple quotes inside that would break our delimiter
             .replace(/"""/g, '"')
     );
 }
