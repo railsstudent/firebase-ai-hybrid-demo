@@ -1,3 +1,3 @@
 {
-  "appUrl": "http://127.0.0.1:5001/vertexai-tts/asia-east2"
+  "getFirebaseConfigUrl": "http://127.0.0.1:5001/vertexai-tts/asia-east2/getFirebaseConfig"
 }
