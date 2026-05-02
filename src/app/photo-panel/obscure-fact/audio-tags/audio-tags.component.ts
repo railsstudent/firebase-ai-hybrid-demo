@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
-import { VOICE_OPTIONS } from '../text-to-speech/constants/voice-options.const';
-import { AudioPromptData } from '../text-to-speech/types/audio-prompt-data.type';
+import { VOICE_OPTIONS } from './constants/voice-options.const';
+import { AudioPromptData } from './types/audio-prompt-data.type';
 
 @Component({
   selector: 'app-audio-tags',

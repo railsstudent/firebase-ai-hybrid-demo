@@ -4,10 +4,10 @@ import { ErrorDisplayComponent } from '@/error-display/error-display.component';
 import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, signal } from '@angular/core';
 import { revokeBlobURL } from '../blob.util';
 import { AudioTagsComponent } from './audio-tags/audio-tags.component';
+import { ModeWithAudioTags } from './audio-tags/types/mode-audio-tags.type';
 import { generateSpeechHelper, streamSpeechWithWebAudio, ttsError } from './generate-audio.util';
 import { AudioPlayerService } from './services/audio-player.service';
 import { TextToSpeechComponent } from './text-to-speech/text-to-speech.component';
-import { ModeWithAudioTags } from './text-to-speech/types/mode-audio-tags.type';
 
 @Component({
   selector: 'app-obscure-fact',
