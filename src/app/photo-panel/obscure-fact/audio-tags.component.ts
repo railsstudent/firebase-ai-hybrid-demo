@@ -20,8 +20,7 @@ import { AudioPromptData } from './text-to-speech/types/audio-prompt-data.type';
             id="scene"
             [formField]="audioPromptForm.scene"
             placeholder="Describe the environment..."
-            rows="4"
-            class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all resize-none"
+            class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
           ></textarea>
         </div>
 
