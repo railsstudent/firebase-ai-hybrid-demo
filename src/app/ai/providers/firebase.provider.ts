@@ -20,7 +20,8 @@ function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConf
           responseMimeType: 'application/json',
           responseSchema: ImageAnalysisSchema,
           thinkingConfig: {
-            thinkingLevel
+            thinkingLevel,
+            includeThoughts: true,
           }
         },
         tools: [{

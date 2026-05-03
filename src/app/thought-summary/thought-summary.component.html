@@ -1,28 +1,33 @@
-@if (htmlThought()) {
-    <div class="w-full mt-6 flex flex-col">
-      <div class="mb-4">
-        <h3 class="text-lg font-semibold text-slate-300 mb-2">Token Usage</h3>
-        @let usage = tokenUsage();
-        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600 flex flex-wrap justify-around">
-          <p class="text-slate-200 italic">
-            <span>Input: </span><span>{{ usage?.input || 0 }}</span>
-          </p>
-          <p class="text-slate-200 italic">
-            <span>Output: </span><span>{{ usage?.output || 0 }}</span>
-          </p>
-          <p class="text-slate-200 italic">
-            <span>Thought: </span><span>{{ usage?.thought || 0 }}</span>
-          </p>
-          <p class="text-slate-200 italic">
-            <span>Total: </span><span>{{ usage?.total }}</span>
-          </p>
-        </div>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold text-slate-300 mb-2">Thought Summary</h3>
-        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
-          <p class="text-slate-200 italic" [innerHTML]="htmlThought()"></p>
-        </div>
+@if (htmlThought() || tokenUsage()) {
+@let usage = tokenUsage();
+@let thought = htmlThought();
+<div class="w-full mt-6 flex flex-col">
+  @if (usage) {
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold text-slate-300 mb-2">Token Usage</h3>
+      <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600 flex flex-wrap justify-around">
+        <p class="text-slate-200 italic">
+          <span>Input: </span><span>{{ usage?.input || 0 }}</span>
+        </p>
+        <p class="text-slate-200 italic">
+          <span>Output: </span><span>{{ usage?.output || 0 }}</span>
+        </p>
+        <p class="text-slate-200 italic">
+          <span>Thought: </span><span>{{ usage?.thought || 0 }}</span>
+        </p>
+        <p class="text-slate-200 italic">
+          <span>Total: </span><span>{{ usage?.total }}</span>
+        </p>
       </div>
     </div>
+  }
+  @if (thought) {
+    <div>
+      <h3 class="text-lg font-semibold text-slate-300 mb-2">Thought Summary</h3>
+      <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600 overflow-y-auto h-64">
+        <p class="text-slate-200 italic" [innerHTML]="thought"></p>
+      </div>
+    </div>
+  }
+</div>
 }
