@@ -1,4 +1,4 @@
-import remoteConfigDefaults from '@/firebase-project/remoteconfig.defaults.json';
+import remoteConfigDefaults from '@/firebase/remote_config_defaults.json';
 import { HttpClient } from '@angular/common/http';
 import { inject, isDevMode } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';

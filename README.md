@@ -55,7 +55,7 @@ First, configure and start the Firebase Cloud Functions emulator.
 2. Navigate to the functions directory:
 
     ```bash
-    cd firebase-project/functions
+    cd firebase/functions
     ```
 
 3. Install dependencies:
