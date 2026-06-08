@@ -1,4 +1,5 @@
 import remoteConfigDefaults from '@/firebase/remote_config_defaults.json';
+import config from '@/public/config.json';
 import { HttpClient } from '@angular/common/http';
 import { inject, isDevMode } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';
@@ -6,7 +7,6 @@ import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-ch
 import { connectFunctionsEmulator, Functions, getFunctions } from "firebase/functions";
 import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'firebase/remote-config';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
-import config from '../../public/config.json';
 import { ConfigService } from './ai/services/config.service';
 import { FirebaseConfigResponse } from './ai/types/firebase-config.type';
 
@@ -34,10 +34,13 @@ export async function bootstrapFirebase() {
       const firebaseApp = initializeApp(app);
       const remoteConfig = await fetchRemoteConfig(firebaseApp);
 
-      initializeAppCheck(firebaseApp, {
-        provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
-        isTokenAutoRefreshEnabled: true,
-      });
+      if (recaptchaSiteKey) {
+        (self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+        initializeAppCheck(firebaseApp, {
+          provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
+          isTokenAutoRefreshEnabled: true,
+        });
+      }
 
       const functionRegion = getValue(remoteConfig, 'functionRegion').asString();
       const functions = getFunctions(firebaseApp, functionRegion);
