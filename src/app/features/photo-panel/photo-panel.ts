@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, OnDestroy, output, signal } from '@angular/core';
-import { ImageAnalysisResponse } from '../ai/types/image-analysis.type';
+import { ImageAnalysisResponse } from '@/features/ai/types/image-analysis.type';
 import { revokeBlobURL } from './blob.util';
 import { ObscureFactComponent } from './obscure-fact/obscure-fact.component';
 import { PhotoUploadComponent } from './photo-upload/photo-upload.component';

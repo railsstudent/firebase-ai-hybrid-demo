@@ -1,6 +1,6 @@
-import { SpeechService } from '@/ai/services/speech.service';
-import { AudioPrompt } from '@/ai/types/audio-prompt.type';
-import { ErrorDisplayComponent } from '@/error-display/error-display.component';
+import { SpeechService } from '@/features/ai/services/speech.service';
+import { AudioPrompt } from '@/features/ai/types/audio-prompt.type';
+import { ErrorDisplayComponent } from '@/features/error-display/error-display.component';
 import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, signal } from '@angular/core';
 import { revokeBlobURL } from '../blob.util';
 import { AudioTagsComponent } from './audio-tags/audio-tags.component';

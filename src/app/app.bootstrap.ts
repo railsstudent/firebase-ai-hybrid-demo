@@ -7,8 +7,8 @@ import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-ch
 import { connectFunctionsEmulator, Functions, getFunctions } from "firebase/functions";
 import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'firebase/remote-config';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
-import { ConfigService } from './ai/services/config.service';
-import { FirebaseConfigResponse } from './ai/types/firebase-config.type';
+import { ConfigService } from './features/ai/services/config.service';
+import { FirebaseConfigResponse } from './features/ai/types/firebase-config.type';
 
 async function fetchRemoteConfig(firebaseApp: FirebaseApp) {
   const remoteConfig = getRemoteConfig(firebaseApp);

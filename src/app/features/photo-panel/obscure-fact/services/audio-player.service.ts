@@ -1,5 +1,5 @@
-import { SpeechService } from '@/ai/services/speech.service';
-import { AudioPrompt } from '@/ai/types/audio-prompt.type';
+import { SpeechService } from '@/features/ai/services/speech.service';
+import { AudioPrompt } from '@/features/ai/types/audio-prompt.type';
 import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 
 // The maximum value of a 16-bit signed integer, used for normalizing audio samples.

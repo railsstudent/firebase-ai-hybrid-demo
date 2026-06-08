@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ConfigService } from './ai/services/config.service';
-import { FirebaseService } from './ai/services/firebase.service';
-import { ImageAnalysisResponse } from './ai/types/image-analysis.type';
-import { AltTextPanel } from './alt-text-panel/alt-text-panel';
-import { PhotoPanel } from './photo-panel/photo-panel';
-import { ThoughtSummaryComponent } from './thought-summary/thought-summary.component';
+import { ConfigService } from './features/ai/services/config.service';
+import { FirebaseService } from './features/ai/services/firebase.service';
+import { ImageAnalysisResponse } from './features/ai/types/image-analysis.type';
+import { AltTextPanel } from './features/alt-text-panel/alt-text-panel';
+import { PhotoPanel } from './features/photo-panel/photo-panel';
+import { ThoughtSummaryComponent } from './features/thought-summary/thought-summary.component';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 

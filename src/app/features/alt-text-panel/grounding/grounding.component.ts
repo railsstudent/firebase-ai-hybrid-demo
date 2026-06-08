@@ -1,7 +1,7 @@
-import { SpeechService } from '@/ai/services/speech.service';
+import { SpeechService } from '@/features/ai/services/speech.service';
 import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, Renderer2, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Metadata } from '../../ai/types/grounding.type';
+import { Metadata } from '@/features/ai/types/grounding.type';
 
 @Component({
   selector: 'app-grounding',

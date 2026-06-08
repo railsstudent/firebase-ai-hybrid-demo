@@ -1,5 +1,5 @@
-import { AudioPrompt } from '@/ai/types/audio-prompt.type';
-import { constructBlobURL } from '@/photo-panel/blob.util';
+import { AudioPrompt } from '@/features/ai/types/audio-prompt.type';
+import { constructBlobURL } from '@/features/photo-panel/blob.util';
 import { inject, Injectable } from '@angular/core';
 import { Functions, httpsCallable } from 'firebase/functions';
 import { StreamMessage } from '../types/stream-message.type';

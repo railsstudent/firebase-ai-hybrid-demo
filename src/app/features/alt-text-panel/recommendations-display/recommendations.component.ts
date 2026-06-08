@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Recommendation } from '../../ai/types/recommendation.type';
+import { Recommendation } from '@/features/ai/types/recommendation.type';
 
 @Component({
   selector: 'app-recommendations-display',

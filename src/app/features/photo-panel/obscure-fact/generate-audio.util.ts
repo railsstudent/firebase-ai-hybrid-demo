@@ -1,4 +1,4 @@
-import { AudioPrompt } from '../../ai/types/audio-prompt.type';
+import { AudioPrompt } from '@/features/ai/types/audio-prompt.type';
 import { signal, WritableSignal } from '@angular/core';
 
 export const ttsError = signal('');
