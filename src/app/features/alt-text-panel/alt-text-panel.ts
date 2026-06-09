@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ImageAnalysisResponse } from '@/features/ai/types/image-analysis.type';
-import { SpinnerIconComponent } from '@/features/icons/spinner-icon.component';
+import { SpinnerIconComponent } from '@/shared/ui/icons/spinner-icon.component';
 import { AltTextDisplayComponent } from './alt-text-display/alt-text-display.component';
 import { RecommendationsDisplay } from './recommendations-display/recommendations.component';
 import { GroundingComponent } from './grounding/grounding.component';

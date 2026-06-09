@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, input, output, viewChild } from '@angular/core';
-import { PhotoIconComponent } from '../../icons/photo-icon.component';
-import { SpinnerIconComponent } from '../../icons/spinner-icon.component';
+import { PhotoIconComponent } from '../../../shared/ui/icons/photo-icon.component';
+import { SpinnerIconComponent } from '../../../shared/ui/icons/spinner-icon.component';
 
 @Component({
   selector: 'app-photo-upload',

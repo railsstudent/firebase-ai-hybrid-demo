@@ -1,13 +1,6 @@
 <div class="min-h-screen bg-slate-900 text-brand-text flex flex-col items-center p-4 sm:p-6 lg:p-8">
   <div class="w-full max-w-6xl mx-auto">
-    <header class="text-center mb-8">
-      <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">
-        Firebase AI Image Alt Text Generator
-      </h1>
-      <p class="mt-2 text-lg text-slate-400">
-        Upload an image to generate alt text and tags with Gemini
-      </p>
-    </header>
+    <app-header />
 
     @if (hasNoFirebase()) {
       <p class="text-lg text-slate-400">Firebase initialization failed.</p>
@@ -35,11 +28,6 @@
         </div>
       </main>
     }
-    <footer class="bg-slate-800/50 border border-slate-700 rounded-2xl mt-auto">
-      <div class="container mx-auto px-6 py-4 text-center text-gray-400">
-        <p>&copy; 2025 Image Analysis and TTS Application.</p>
-        <p>Built with Gemini TTS, Angular, Firebase AI Logic & Tailwind 4.</p>
-      </div>
-    </footer>
+    <app-footer />
   </div>
 </div>

@@ -1,8 +1,8 @@
+import { AI_MODEL } from '@/features/ai/constants/firebase.constant';
+import { ImageAnalysis, ImageAnalysisResponse } from '@/features/ai/types/image-analysis.type';
+import { fileToGenerativePart } from '@/features/ai/utils/fileToPart.util';
 import { inject, Injectable } from '@angular/core';
 import { GroundingMetadata, UsageMetadata, WebGroundingChunk } from 'firebase/ai';
-import { AI_MODEL } from '../constants/firebase.constant';
-import { fileToGenerativePart } from '../fileToPart.util';
-import { ImageAnalysis, ImageAnalysisResponse } from '../types/image-analysis.type';
 
 @Injectable({
   providedIn: 'root'

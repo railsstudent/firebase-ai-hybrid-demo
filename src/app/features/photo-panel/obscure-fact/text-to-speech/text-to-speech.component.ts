@@ -1,4 +1,4 @@
-import { SpinnerIconComponent } from '@/features/icons/spinner-icon.component';
+import { SpinnerIconComponent } from '@/shared/ui/icons/spinner-icon.component';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { GenerateSpeechMode } from '../generate-audio.util';

@@ -5,6 +5,8 @@ import { ImageAnalysisResponse } from './features/ai/types/image-analysis.type';
 import { AltTextPanel } from './features/alt-text-panel/alt-text-panel';
 import { PhotoPanel } from './features/photo-panel/photo-panel';
 import { ThoughtSummaryComponent } from './features/thought-summary/thought-summary.component';
+import { FooterComponent } from './shared/ui/layout/footer/footer.component';
+import { HeaderComponent } from './shared/ui/layout/header/header.component';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 
@@ -14,6 +16,8 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/web
     ThoughtSummaryComponent,
     PhotoPanel,
     AltTextPanel,
+    HeaderComponent,
+    FooterComponent,
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
