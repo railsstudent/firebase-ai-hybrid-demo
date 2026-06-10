@@ -1,12 +1,14 @@
-import { ApplicationConfig, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
-
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideFirebase } from './features/ai/providers/firebase.provider';
-import { bootstrapFirebase } from './app.bootstrap';
+import { ConfigService } from './features/ai/services/config.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideAppInitializer(async () => bootstrapFirebase()),
+    provideAppInitializer(async () => {
+      const configService = inject(ConfigService);
+      await configService.initialize();
+    }),
     provideFirebase(),
   ]
 };

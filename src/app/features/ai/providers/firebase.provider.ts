@@ -1,5 +1,5 @@
 import { inject, makeEnvironmentProviders } from '@angular/core';
-import { getAI, getGenerativeModel, ThinkingLevel, VertexAIBackend } from 'firebase/ai';
+import { getAI, getGenerativeModel, HarmBlockThreshold, HarmCategory, ThinkingLevel, VertexAIBackend } from 'firebase/ai';
 import { FirebaseApp } from "firebase/app";
 import { getValue, RemoteConfig } from 'firebase/remote-config';
 import { AI_MODEL } from '../constants/firebase.constant';
@@ -22,15 +22,33 @@ function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConf
           thinkingConfig: {
             thinkingLevel,
             includeThoughts: true,
-          }
+          },
         },
+        safetySettings:[
+          {
+            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+          },
+                    {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+          }
+        ],
         tools: [{
           googleSearch: {}
         }]
     });
 }
 
-export function provideFirebase() {
+export function   provideFirebase() {
     return makeEnvironmentProviders([
         {
             provide: AI_MODEL,
