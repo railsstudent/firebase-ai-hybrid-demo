@@ -48,7 +48,7 @@ function getGenerativeAIModel(firebaseApp: FirebaseApp, remoteConfig: RemoteConf
     });
 }
 
-export function   provideFirebase() {
+export function provideFirebase() {
     return makeEnvironmentProviders([
         {
             provide: AI_MODEL,
