@@ -69,7 +69,7 @@ export class ConfigService  {
         const isLocalhost = this.#isLocalhost();
 
         if (isOnline && recaptchaSiteKey) {
-          (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = configureAppCheckDebugToken(appCheckDebugToken, isLocalhost);
+          configureAppCheckDebugToken(appCheckDebugToken, isLocalhost);
           initializeAppCheck(this.#firebaseApp, {
             provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
             isTokenAutoRefreshEnabled: true,
