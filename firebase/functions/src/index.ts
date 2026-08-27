@@ -1,4 +1,5 @@
 import "./env";
+import logger from "firebase-functions/logger";
 
 /**
  * Import function triggers from their respective submodules:
@@ -82,7 +83,7 @@ export const getFirebaseConfig = onRequest({ cors }, (request, response) => {
         response.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
         response.json(FIREBASE_APP_CONFIG);
     } catch (err) {
-        console.error(err);
+        logger.error(err);
         response.status(500).send("Internal Server Error");
     }
 });

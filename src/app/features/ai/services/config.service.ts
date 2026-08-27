@@ -1,3 +1,5 @@
+import { injectOnlineStatus } from '@/core/utils/connection.util';
+import { configureAppCheckDebugToken, injectIsLocalhost } from '@/core/utils/platform.util';
 import remoteConfigDefaults from '@/firebase/remote_config_defaults.json';
 import config from '@/public/config.json';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +8,7 @@ import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { connectFunctionsEmulator, Functions, getFunctions } from 'firebase/functions';
 import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'firebase/remote-config';
-import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { catchError, lastValueFrom, tap, throwError } from 'rxjs';
 import { FirebaseConfigResponse } from '../types/firebase-config.type';
 
 @Injectable({
@@ -17,6 +19,8 @@ export class ConfigService  {
     #firebaseApp: FirebaseApp | undefined = undefined;
     #functions: Functions | undefined = undefined;
     #httpService = inject(HttpClient);
+    #isOnline = injectOnlineStatus();
+    #isLocalhost = injectIsLocalhost();
 
     get remoteConfig(): RemoteConfig {
       if (!this.#remoteConfig) {
@@ -43,9 +47,11 @@ export class ConfigService  {
       try {
         const firebaseConfig$ =
         this.#httpService.get<FirebaseConfigResponse>(config.getFirebaseConfigUrl)
-          .pipe(catchError((e) => throwError(() => e)));
+          .pipe(
+            catchError((e) => throwError(() => e))
+          );
         const firebaseConfig = await lastValueFrom(firebaseConfig$);
-        const { app, recaptchaSiteKey } = firebaseConfig;
+        const { app, recaptchaSiteKey, appCheckDebugToken='' } = firebaseConfig;
         this.#firebaseApp = initializeApp(app);
 
         const local = isDevMode();
@@ -59,8 +65,11 @@ export class ConfigService  {
           console.error('Failed to fetch and activate remote config:', error);
         }
 
-        if (recaptchaSiteKey) {
-          (self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = local;
+        const isOnline = this.#isOnline();
+        const isLocalhost = this.#isLocalhost();
+
+        if (isOnline && recaptchaSiteKey) {
+          (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = configureAppCheckDebugToken(appCheckDebugToken, isLocalhost);
           initializeAppCheck(this.#firebaseApp, {
             provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
             isTokenAutoRefreshEnabled: true,

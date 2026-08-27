@@ -11,6 +11,7 @@ export const FIREBASE_APP_CONFIG = (() => {
     const messagingSenderId = validate(env.APP_MESSAGING_SENDER_ID, "Messaging Sender ID", missingKeys);
     const recaptchaSiteKey = validate(env.RECAPTCHA_ENTERPRISE_SITE_KEY, "Recaptcha site key", missingKeys);
     const projectId = validate(env.GCLOUD_PROJECT, "Project ID", missingKeys);
+    const appCheckDebugToken = env.APP_CHECK_DEBUG_TOKEN;
 
     if (missingKeys.length > 0) {
         throw new Error(`Missing environment variables: ${missingKeys.join(", ")}`);
@@ -26,5 +27,6 @@ export const FIREBASE_APP_CONFIG = (() => {
             storageBucket: `${projectId}.firebasestorage.app`,
         },
         recaptchaSiteKey,
+        appCheckDebugToken,
     };
 })();
