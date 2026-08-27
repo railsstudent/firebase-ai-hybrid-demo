@@ -48,7 +48,7 @@ export class PhotoPanel implements OnDestroy {
     }
 
     // Revoke the old URL to prevent memory leaks
-    revokeBlobURL(this.previewUrl);
+    revokeBlobURL(this.previewUrl());
 
     this.selectedFile.set(file);
     this.analysis.set(undefined);
@@ -56,6 +56,6 @@ export class PhotoPanel implements OnDestroy {
   }
 
   ngOnDestroy() {
-    revokeBlobURL(this.previewUrl);
+    revokeBlobURL(this.previewUrl());
   }
 }

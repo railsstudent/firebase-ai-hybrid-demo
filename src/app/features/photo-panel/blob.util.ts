@@ -1,4 +1,4 @@
-import { Signal } from '@angular/core';
+
 
 function isValidBlobUrl(url: string) {
   try {
@@ -10,8 +10,7 @@ function isValidBlobUrl(url: string) {
   }
 }
 
-export function revokeBlobURL(dataUrl: Signal<string | undefined>) {
-  const blobUrl = dataUrl();
+export function revokeBlobURL(blobUrl: string | undefined) {
   if (blobUrl && isValidBlobUrl(blobUrl)) {
     console.log('Revoking blob URL');
     URL.revokeObjectURL(blobUrl);

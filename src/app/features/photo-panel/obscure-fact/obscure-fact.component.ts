@@ -38,7 +38,7 @@ export class ObscureFactComponent implements OnDestroy {
     const fact = this.interestingFact();
 
     if (fact) {
-      revokeBlobURL(this.audioUrl);
+      revokeBlobURL(this.audioUrl());
       this.audioUrl.set(undefined);
 
       const audioPrompt = {
@@ -62,6 +62,6 @@ export class ObscureFactComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    revokeBlobURL(this.audioUrl);
+    revokeBlobURL(this.audioUrl());
   }
 }
