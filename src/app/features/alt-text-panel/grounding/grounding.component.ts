@@ -1,7 +1,6 @@
-import { SpeechService } from '@/features/ai/services/speech.service';
+import { Metadata } from '@/features/ai/types/grounding.type';
 import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, Renderer2, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Metadata } from '@/features/ai/types/grounding.type';
 
 @Component({
   selector: 'app-grounding',
@@ -15,7 +14,6 @@ export class GroundingComponent {
   sanitizer = inject(DomSanitizer);
   renderer2 = inject(Renderer2);
   document = inject(ElementRef);
-  speechService = inject(SpeechService);
 
   isLoading = signal(false);
   audioUrl = signal<string | undefined>(undefined)

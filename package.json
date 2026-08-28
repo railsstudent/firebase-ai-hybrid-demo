@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "./cli.js && ng serve",
+    "dev": "concurrently -k \"npm run serve --prefix firebase/functions\" \"wait-on tcp:5001 && ng serve\"",
     "build": "./cli.js && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -30,12 +31,14 @@
     "@angular/cli": "21.2.7",
     "@angular/compiler-cli": "21.2.9",
     "@types/jasmine": "~6.0.0",
+    "concurrently": "10.0.5",
     "jasmine-core": "6.3.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.2.0",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "wait-on": "9.1.0"
   }
 }
